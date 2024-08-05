@@ -10,7 +10,7 @@ function Toolbar() {
     <div className="toolbar">
       <div className="toolbar-buttons">
         <Link to="/home-screen" className="toolbar-button">Home</Link>
-        <Link to= "/" className="toolbar-button">Algorithms</Link>
+        <Link to= "/AlgorithmsPage" className="toolbar-button">Algorithms</Link>
         <Link to="/contact" className="toolbar-button">Contact</Link>
       </div>
     </div>
