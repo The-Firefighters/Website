@@ -1,7 +1,3 @@
-//this is the manual graph building script, 
-// eg - clicking on the screen will generate a node, clicking on a node will create an edge to be sticked with another node
-// right click - delete, left click - create
-
 import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import './GraphBuilder.css';
@@ -10,57 +6,66 @@ const Graph = () => {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const [isSaved, setIsSaved] = useState(false);
+  const [mockLine, setMockLine] = useState(null);
   const svgRef = useRef(null);
   const nodeId = useRef(0);
 
-  useEffect(() => { // the screen size where you create and display the graph
+  const NODE_RADIUS = 10;
+  const CLICK_AREA_RADIUS = 20;
+
+  useEffect(() => {
     const svg = d3.select(svgRef.current)
       .attr('width', 800)
       .attr('height', 600)
       .style('border', '1px solid black');
 
-    const handleRightClick = (event) => { 
-      if (isSaved) return;
+    const handleSvgRightClick = (event) => {
+      if (isSaved || mockLine) return;
       event.preventDefault();
       const [x, y] = d3.pointer(event);
+      if (nodes.some(node => Math.hypot(node.x - x, node.y - y) < CLICK_AREA_RADIUS)) return;
       const id = nodeId.current++;
-      setNodes([...nodes, { id, x, y }]);
+      setNodes(prevNodes => [...prevNodes, { id, x, y }]);
     };
 
     const handleNodeRightClick = (event, node) => {
-      if (isSaved) return;
-      event.stopPropagation();
       event.preventDefault();
-      const [x, y] = d3.pointer(event);
-      const newEdge = { source: node.id, target: null, x, y };
-      setEdges([...edges, newEdge]);
-
-      const handleNodeClick = (event, targetNode) => {
-        setEdges(edges.map(e => (e === newEdge ? { ...e, target: targetNode.id } : e)));
-        svg.selectAll('.node').on('click', null);
-      };
-
-      svg.selectAll('.node')
-        .on('click', (event, targetNode) => handleNodeClick(event, targetNode));
+      event.stopPropagation();
+      if (isSaved) return;
+      
+      if (!mockLine) {
+        setMockLine({ source: node, x: node.x, y: node.y });
+      } else if (mockLine.source.id !== node.id) {
+        // Check for duplicate edges
+        const isDuplicate = edges.some(edge => 
+          (edge.source === mockLine.source.id && edge.target === node.id) ||
+          (edge.source === node.id && edge.target === mockLine.source.id)
+        );
+        if (!isDuplicate) {
+          setEdges(prevEdges => [...prevEdges, { source: mockLine.source.id, target: node.id }]);
+        }
+        setMockLine(null);
+      } else {
+        setMockLine(null);
+      }
     };
 
-    const handleNodeClick = (event, node) => { // delte the node and all the edges from or to it
+    const handleNodeClick = (event, node) => {
+      if (isSaved || mockLine) return;
+      event.stopPropagation();
+      setNodes(prevNodes => prevNodes.filter(n => n.id !== node.id));
+      setEdges(prevEdges => prevEdges.filter(e => e.source !== node.id && e.target !== node.id));
+    };
+
+    const handleEdgeClick = (event, edge) => {
       if (isSaved) return;
       event.stopPropagation();
-      setNodes(nodes.filter(n => n.id !== node.id));
-      setEdges(edges.filter(e => e.source !== node.id && e.target !== node.id));
+      setEdges(prevEdges => prevEdges.filter(e => e !== edge));
     };
 
-    const handleEdgeClick = (event, edge) => { // delete the edge while right clicking on it 
-      if (isSaved) return;
-      event.stopPropagation();
-      setEdges(edges.filter(e => e !== edge));
-    };
-
-    svg.on('contextmenu', handleRightClick);
+    svg.on('contextmenu', handleSvgRightClick);
 
     const updateGraph = () => {
-      // Nodes
       const nodeSelection = svg.selectAll('.node')
         .data(nodes, d => d.id);
 
@@ -71,7 +76,16 @@ const Graph = () => {
         .on('click', handleNodeClick);
 
       nodeEnter.append('circle')
-        .attr('r', 10)
+        .attr('class', 'click-area')
+        .attr('r', CLICK_AREA_RADIUS)
+        .attr('cx', d => d.x)
+        .attr('cy', d => d.y)
+        .style('fill', 'transparent')
+        .style('cursor', 'pointer');
+
+      nodeEnter.append('circle')
+        .attr('class', 'visible-node')
+        .attr('r', NODE_RADIUS)
         .attr('cx', d => d.x)
         .attr('cy', d => d.y)
         .style('fill', 'blue');
@@ -82,30 +96,61 @@ const Graph = () => {
         .attr('dy', '.35em')
         .attr('text-anchor', 'middle')
         .style('fill', 'white')
+        .style('pointer-events', 'none')
         .text(d => d.id);
 
       nodeSelection.exit().remove();
 
-      // Edges
       const edgeSelection = svg.selectAll('.edge')
         .data(edges, d => `${d.source}-${d.target}`);
 
       edgeSelection.enter()
         .append('line')
         .attr('class', 'edge')
+        .merge(edgeSelection)
         .attr('x1', d => nodes.find(n => n.id === d.source)?.x)
         .attr('y1', d => nodes.find(n => n.id === d.source)?.y)
-        .attr('x2', d => d.target !== null ? nodes.find(n => n.id === d.target)?.x : d.x)
-        .attr('y2', d => d.target !== null ? nodes.find(n => n.id === d.target)?.y : d.y)
+        .attr('x2', d => nodes.find(n => n.id === d.target)?.x)
+        .attr('y2', d => nodes.find(n => n.id === d.target)?.y)
         .style('stroke', 'black')
         .style('stroke-width', 2)
         .on('click', handleEdgeClick);
 
       edgeSelection.exit().remove();
+
+      svg.selectAll('.mock-line').remove();
+      if (mockLine) {
+        svg.append('line')
+          .attr('class', 'mock-line')
+          .attr('x1', mockLine.source.x)
+          .attr('y1', mockLine.source.y)
+          .attr('x2', mockLine.x)
+          .attr('y2', mockLine.y)
+          .style('stroke', 'red')
+          .style('stroke-width', 2)
+          .style('stroke-dasharray', '5,5');
+      }
     };
 
+    const handleMouseMove = (event) => {
+      if (mockLine) {
+        const [x, y] = d3.pointer(event);
+        setMockLine(prev => ({ ...prev, x, y }));
+      }
+    };
+
+    svg.on('mousemove', handleMouseMove);
+
+    svg.node().addEventListener('contextmenu', (event) => event.preventDefault());
+
     updateGraph();
-  }, [nodes, edges, isSaved]);
+
+    return () => {
+      svg.on('contextmenu', null);
+      svg.on('mousemove', null);
+      svg.node().removeEventListener('contextmenu', (event) => event.preventDefault());
+    };
+  }, [nodes, edges, isSaved, mockLine]);
 
   const handleSaveGraph = () => {
     setIsSaved(true);
