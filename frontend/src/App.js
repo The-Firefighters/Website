@@ -1,24 +1,28 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Toolbar from './componenets/Toolbar';
 import HomeScreen from './componenets/Home/HomeScreen';
+import Contact from './componenets/Home/Contact';
 
 function App() {
   return (
-    <div className="App">
-       <Toolbar /> {/* Add the Toolbar component here */}
-       <HomeScreen/> {/*bla*/}
-        <p>
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-        </a>
-    </div>
+    <Router>
+      <div className="App">
+        <Toolbar /> {}
+        <Routes>
+          <Route path="*" element={<HomeScreen/>} />
+          <Route path="/contact" element={<Contact/>} /> 
+        </Routes>
+          <a
+            className="App-link"
+            href="https://reactjs.org"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+          </a>
+      </div>
+    </Router>
   );
 }
 

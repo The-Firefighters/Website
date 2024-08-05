@@ -23,6 +23,7 @@
     margin: 0 5px;
     cursor: pointer;
     border-radius: 3px;
+    text-decoration: none; 
   }
   
   .toolbar-button:hover {
