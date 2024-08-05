@@ -1,1 +1,0 @@
-//this will give explaintions about us and the project

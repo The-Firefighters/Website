@@ -1,0 +1,35 @@
+.home-screen {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .data-input {
+    width: 80%;
+    height: 150px;
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+  }
+  
+  .try-it-out-button {
+    padding: 10px 20px;
+    background-color: #61dafb;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .try-it-out-button:hover {
+    background-color: #21a1f1;
+  }
+  
