@@ -1,0 +1,51 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.sidebar {
+    float: left;
+    width: 200px;
+    padding: 10px;
+    border-right: 1px solid #ccc;
+    box-sizing: border-box;
+    height: 100%;
+    background-color: #f9f9f9;
+}
+
+.graph-container {
+    margin-left: 220px;
+    padding: 10px;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+button {
+    display: block;
+    margin: 20px 0;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.choose-algo,
+.load-graph {
+    margin-bottom: 20px;
+}
+
+.choose-algo h3,
+.load-graph h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.choose-algo select,
+.load-graph input[type="file"] {
+    padding: 5px;
+    font-size: 16px;
+    width: 100%;
+}

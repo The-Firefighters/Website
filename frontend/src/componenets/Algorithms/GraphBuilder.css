@@ -1,0 +1,31 @@
+svg {
+    cursor: crosshair;
+}
+
+.node {
+    cursor: pointer;
+}
+
+.edge {
+    pointer-events: stroke;
+    cursor: pointer;
+}
+
+button {
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.sidebar {
+    float: left;
+    width: 200px;
+    padding: 10px;
+    border-right: 1px solid #ccc;
+}
+
+.graph-container {
+    margin-left: 220px;
+    padding: 10px;
+}

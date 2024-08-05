@@ -1,2 +1,0 @@
-//this will allow the users to load a graph from a json file, we need to explain how our json file should be (maybe give an example that can be modified)
-//or maybe we should consider chaning the json file to look like exactly in networkX

@@ -4,6 +4,7 @@ import './App.css';
 import Toolbar from './componenets/Toolbar';
 import HomeScreen from './componenets/Home/HomeScreen';
 import Contact from './componenets/Home/Contact';
+import Algorithm from './componenets/Algorithms/AlgorithmsPage';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Toolbar /> {}
         <Routes>
           <Route path="*" element={<HomeScreen/>} />
+          <Route path="/AlgorithmsPage" element={<Algorithm/>} />
           <Route path="/contact" element={<Contact/>} /> 
         </Routes>
           <a
