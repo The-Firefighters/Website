@@ -30,5 +30,7 @@
 
 .graph-builder .temp-edge {
     stroke-dasharray: 5, 5;
-    stroke: gray;
+    stroke: red;
+    stroke-width: 2;
+    pointer-events: none;
 }

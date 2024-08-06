@@ -4,6 +4,8 @@ import './GraphBuilder.css';
 const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
   const [startNode, setStartNode] = useState(null);
   const [tempEdge, setTempEdge] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [draggedNode, setDraggedNode] = useState(null);
   const svgRef = useRef(null);
   const nodeIdRef = useRef(0);
 
@@ -14,6 +16,8 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
   }, [setNodes]);
 
   const handleClick = useCallback((event) => {
+    if (isDragging) return;
+
     const clickedNode = nodes.find(
       (node) =>
         Math.abs(node.x - event.offsetX) < 15 &&
@@ -23,7 +27,7 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
     if (clickedNode) {
       if (!startNode) {
         setStartNode(clickedNode);
-        setTempEdge({ source: clickedNode, target: { x: event.offsetX, y: event.offsetY } });
+        setTempEdge({ source: clickedNode.id, target: { x: event.offsetX, y: event.offsetY } });
       } else if (startNode.id !== clickedNode.id) {
         const newEdge = { id: Date.now(), source: startNode.id, target: clickedNode.id };
         setEdges(prevEdges => [...prevEdges, newEdge]);
@@ -34,13 +38,12 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
       setStartNode(null);
       setTempEdge(null);
     }
-  }, [nodes, startNode, setEdges]);
+  }, [nodes, startNode, setEdges, isDragging]);
 
   const handleRightClick = useCallback((event) => {
     event.preventDefault();
     const { offsetX, offsetY } = event;
 
-    // Check if clicked on a node
     const clickedNode = nodes.find(
       (node) => Math.abs(node.x - offsetX) < 15 && Math.abs(node.y - offsetY) < 15
     );
@@ -51,7 +54,6 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
         edge => edge.source !== clickedNode.id && edge.target !== clickedNode.id
       ));
     } else {
-      // Check if clicked on an edge
       const clickedEdge = edges.find((edge) => {
         const sourceNode = nodes.find((node) => node.id === edge.source);
         const targetNode = nodes.find((node) => node.id === edge.target);
@@ -60,7 +62,7 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
         const edgeLength = Math.sqrt(Math.pow(targetNode.x - sourceNode.x, 2) + Math.pow(targetNode.y - sourceNode.y, 2));
         const clickDistance = Math.abs((targetNode.y - sourceNode.y) * offsetX - (targetNode.x - sourceNode.x) * offsetY + targetNode.x * sourceNode.y - targetNode.y * sourceNode.x) / edgeLength;
         
-        return clickDistance < 5; // Increased click area for easier deletion
+        return clickDistance < 5;
       });
 
       if (clickedEdge) {
@@ -71,9 +73,38 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
 
   const handleMouseMove = useCallback((event) => {
     if (startNode) {
-      setTempEdge(prev => ({ ...prev, target: { x: event.offsetX, y: event.offsetY } }));
+      setTempEdge(prev => ({
+        ...prev,
+        target: { x: event.offsetX, y: event.offsetY }
+      }));
     }
-  }, [startNode]);
+    if (isDragging && draggedNode) {
+      setNodes(prevNodes =>
+        prevNodes.map(node =>
+          node.id === draggedNode.id
+            ? { ...node, x: event.offsetX, y: event.offsetY }
+            : node
+        )
+      );
+    }
+  }, [startNode, isDragging, draggedNode, setNodes]);
+
+  const handleMouseDown = useCallback((event) => {
+    const clickedNode = nodes.find(
+      (node) =>
+        Math.abs(node.x - event.offsetX) < 15 &&
+        Math.abs(node.y - event.offsetY) < 15
+    );
+    if (clickedNode) {
+      setIsDragging(true);
+      setDraggedNode(clickedNode);
+    }
+  }, [nodes]);
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+    setDraggedNode(null);
+  }, []);
 
   useEffect(() => {
     const svg = svgRef.current;
@@ -81,14 +112,18 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
     svg.addEventListener('click', handleClick);
     svg.addEventListener('contextmenu', handleRightClick);
     svg.addEventListener('mousemove', handleMouseMove);
+    svg.addEventListener('mousedown', handleMouseDown);
+    svg.addEventListener('mouseup', handleMouseUp);
 
     return () => {
       svg.removeEventListener('dblclick', handleDoubleClick);
       svg.removeEventListener('click', handleClick);
       svg.removeEventListener('contextmenu', handleRightClick);
       svg.removeEventListener('mousemove', handleMouseMove);
+      svg.removeEventListener('mousedown', handleMouseDown);
+      svg.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [handleDoubleClick, handleClick, handleRightClick, handleMouseMove]);
+  }, [handleDoubleClick, handleClick, handleRightClick, handleMouseMove, handleMouseDown, handleMouseUp]);
 
   const renderEdge = (edge, index, isTemp = false) => {
     const sourceNode = nodes.find((node) => node.id === edge.source);
@@ -100,7 +135,7 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
     const dy = targetNode.y - sourceNode.y;
     const angle = Math.atan2(dy, dx);
 
-    const arrowSize = 10;
+    const arrowSize = isTemp ? 0 : 15;
     const arrowX = targetNode.x - arrowSize * Math.cos(angle);
     const arrowY = targetNode.y - arrowSize * Math.sin(angle);
 
@@ -111,9 +146,10 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
           y1={sourceNode.y}
           x2={targetNode.x}
           y2={targetNode.y}
-          stroke={isTemp ? "gray" : "black"}
-          strokeWidth="3"
+          stroke={isTemp ? "red" : "black"}
+          strokeWidth={isTemp ? "2" : "3"}
           strokeDasharray={isTemp ? "5,5" : "none"}
+          className={isTemp ? "temp-edge" : ""}
         />
         {!isTemp && (
           <polygon
