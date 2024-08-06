@@ -7,19 +7,44 @@ import './AlgorithmsPage.css';
 const AlgorithmPage = () => {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
-  const [isSaved, setIsSaved] = useState(false);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState('');
+  const [budget, setBudget] = useState('');
 
   return (
-    <div className="AlgorithmsPage">
-
-      <h1>Algorithm Page</h1>
-      <div className="sidebar">
-        <ChooseAlgo selectedAlgorithm={selectedAlgorithm} setSelectedAlgorithm={setSelectedAlgorithm} />
-        <LoadGraph setNodes={setNodes} setEdges={setEdges} />
-      </div>
-      <div className="graph-container">
-        <GraphBuilder nodes={nodes} setNodes={setNodes} edges={edges} setEdges={setEdges} isSaved={isSaved} setIsSaved={setIsSaved} />
+    <div className="algorithm-page">
+      <div className="content-wrapper">
+        <div className="graph-box">
+          <GraphBuilder nodes={nodes} setNodes={setNodes} edges={edges} setEdges={setEdges} />
+        </div>
+        <div className="info-box">
+          <div className="section">
+            <strong>Build a Graph:</strong>
+            <ul>
+              <li>To create a node, double-click in the drawing area.</li>
+              <li>To create an edge, first click on the output node and then click on the destination node.</li>
+              <li>Right-clicking deletes edges and nodes.</li>
+            </ul>
+          </div>
+          <div className="section">
+            <LoadGraph setNodes={setNodes} setEdges={setEdges} />
+          </div>
+          <div className="section">
+            <ChooseAlgo selectedAlgorithm={selectedAlgorithm} setSelectedAlgorithm={setSelectedAlgorithm} />
+          </div>
+          {selectedAlgorithm.toLowerCase().includes('maxsave') && (
+            <div className="section">
+              <strong>Add a Budget</strong>
+              <input 
+                type="number" 
+                min="1" 
+                value={budget} 
+                onChange={(e) => setBudget(e.target.value)}
+                placeholder="Enter budget (>0)"
+              />
+            </div>
+          )}
+          <button className="run-algorithm">Run the Algorithm!</button>
+        </div>
       </div>
     </div>
   );
