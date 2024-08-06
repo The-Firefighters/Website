@@ -5,7 +5,7 @@
 import React from 'react';
 import './ChooseAlgo.css';
 
-const ChooseAlgo = ({ selectedAlgorithm, setSelectedAlgorithm }) => {
+const ChooseAlgo = ({ selectedAlgorithm, setSelectedAlgorithm, disabled }) => {
   const algorithms = [
     'Spreading MaxSave',
     'Spreading MinBudget',
@@ -23,6 +23,7 @@ const ChooseAlgo = ({ selectedAlgorithm, setSelectedAlgorithm }) => {
         value={selectedAlgorithm} 
         onChange={(e) => setSelectedAlgorithm(e.target.value)}
         aria-label="Choose Algorithm"
+        disabled={disabled}
       >
         <option value="" disabled>Select an algorithm</option>
         {algorithms.map((algo, index) => (
