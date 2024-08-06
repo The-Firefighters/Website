@@ -11,7 +11,6 @@ html {
     display: flex;
     flex-direction: column;
     height: calc(100vh - 60px);
-    /* Adjust based on your toolbar height */
     padding: 10px;
     box-sizing: border-box;
 }
@@ -45,6 +44,8 @@ html {
 
 .section {
     margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
 }
 
 .section strong {
@@ -72,6 +73,10 @@ input[type="number"] {
     border-radius: 4px;
 }
 
+select[multiple] {
+    height: 100px;
+}
+
 .run-algorithm {
     display: block;
     width: 100%;
@@ -87,4 +92,9 @@ input[type="number"] {
 
 .run-algorithm:hover {
     background-color: #45a049;
+}
+
+.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }

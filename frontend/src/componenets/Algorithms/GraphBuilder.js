@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './GraphBuilder.css';
 
-const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
+const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved }) => {
   const [startNode, setStartNode] = useState(null);
   const [tempEdge, setTempEdge] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -10,13 +10,14 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
   const nodeIdRef = useRef(0);
 
   const handleDoubleClick = useCallback((event) => {
+    if (isGraphSaved) return;
     const { offsetX, offsetY } = event;
     const newNode = { id: nodeIdRef.current++, x: offsetX, y: offsetY };
     setNodes(prevNodes => [...prevNodes, newNode]);
-  }, [setNodes]);
+  }, [setNodes, isGraphSaved]);
 
   const handleClick = useCallback((event) => {
-    if (isDragging) return;
+    if (isGraphSaved || isDragging) return;
 
     const clickedNode = nodes.find(
       (node) =>
@@ -38,9 +39,10 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
       setStartNode(null);
       setTempEdge(null);
     }
-  }, [nodes, startNode, setEdges, isDragging]);
+  }, [nodes, startNode, setEdges, isDragging, isGraphSaved]);
 
   const handleRightClick = useCallback((event) => {
+    if (isGraphSaved) return;
     event.preventDefault();
     const { offsetX, offsetY } = event;
 
@@ -69,9 +71,10 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
         setEdges(prevEdges => prevEdges.filter(edge => edge.id !== clickedEdge.id));
       }
     }
-  }, [nodes, edges, setNodes, setEdges]);
+  }, [nodes, edges, setNodes, setEdges, isGraphSaved]);
 
   const handleMouseMove = useCallback((event) => {
+    if (isGraphSaved) return;
     if (startNode) {
       setTempEdge(prev => ({
         ...prev,
@@ -87,9 +90,10 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
         )
       );
     }
-  }, [startNode, isDragging, draggedNode, setNodes]);
+  }, [startNode, isDragging, draggedNode, setNodes, isGraphSaved]);
 
   const handleMouseDown = useCallback((event) => {
+    if (isGraphSaved) return;
     const clickedNode = nodes.find(
       (node) =>
         Math.abs(node.x - event.offsetX) < 15 &&
@@ -99,12 +103,13 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
       setIsDragging(true);
       setDraggedNode(clickedNode);
     }
-  }, [nodes]);
+  }, [nodes, isGraphSaved]);
 
   const handleMouseUp = useCallback(() => {
+    if (isGraphSaved) return;
     setIsDragging(false);
     setDraggedNode(null);
-  }, []);
+  }, [isGraphSaved]);
 
   useEffect(() => {
     const svg = svgRef.current;
@@ -171,7 +176,7 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
             cx={node.x}
             cy={node.y}
             r="15"
-            fill={node.id === startNode?.id ? "yellow" : "lightblue"}
+            fill={node.color || (node.id === startNode?.id ? "yellow" : "lightblue")}
             stroke="blue"
             strokeWidth="2"
           />
