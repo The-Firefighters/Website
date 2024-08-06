@@ -1,31 +1,34 @@
-svg {
-    cursor: crosshair;
+.graph-builder {
+    width: 100%;
+    height: 100%;
+    border: 1px solid black;
+    background-color: #f0f0f0;
 }
 
-.node {
+.graph-builder circle {
+    cursor: pointer;
+    transition: fill 0.2s ease;
+}
+
+.graph-builder circle:hover {
+    fill: #a0d8ff;
+}
+
+.graph-builder line {
+    stroke-width: 2;
     cursor: pointer;
 }
 
-.edge {
-    pointer-events: stroke;
-    cursor: pointer;
+.graph-builder text {
+    user-select: none;
+    pointer-events: none;
 }
 
-button {
-    margin-bottom: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
+.graph-builder polygon {
+    pointer-events: none;
 }
 
-.sidebar {
-    float: left;
-    width: 200px;
-    padding: 10px;
-    border-right: 1px solid #ccc;
-}
-
-.graph-container {
-    margin-left: 220px;
-    padding: 10px;
+.graph-builder .temp-edge {
+    stroke-dasharray: 5, 5;
+    stroke: gray;
 }

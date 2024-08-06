@@ -4,7 +4,6 @@ import './HomeScreen.css';
 
 function HomeScreen() {
   const TheProblem = "Explanation about the problem and who created the solutions";
-  const Algorithms = "Algorithms explanation";
   const Spreading = "The Spreading methode says that the vaccination can spread from the nodes to their neighbors just like the infection/fire";
   const NonSpreading = "The Spreading methode says that the vaccination cannot spread from the nodes to their neighbors just like the infection/fire, meaning that the vaccination is static";
   const MaxSave = "In the MaxSave algorithm, giving a certain budget, we need to save as many nodes that we can from the targeted nodes";

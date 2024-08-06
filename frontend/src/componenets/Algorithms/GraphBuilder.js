@@ -1,167 +1,158 @@
-import React, { useState, useEffect, useRef } from 'react';
-import * as d3 from 'd3';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './GraphBuilder.css';
 
-const Graph = () => {
-  const [nodes, setNodes] = useState([]);
-  const [edges, setEdges] = useState([]);
-  const [isSaved, setIsSaved] = useState(false);
-  const [mockLine, setMockLine] = useState(null);
+const GraphBuilder = ({ nodes, setNodes, edges, setEdges }) => {
+  const [startNode, setStartNode] = useState(null);
+  const [tempEdge, setTempEdge] = useState(null);
   const svgRef = useRef(null);
-  const nodeId = useRef(0);
+  const nodeIdRef = useRef(0);
 
-  const NODE_RADIUS = 10;
-  const CLICK_AREA_RADIUS = 20;
+  const handleDoubleClick = useCallback((event) => {
+    const { offsetX, offsetY } = event;
+    const newNode = { id: nodeIdRef.current++, x: offsetX, y: offsetY };
+    setNodes(prevNodes => [...prevNodes, newNode]);
+  }, [setNodes]);
+
+  const handleClick = useCallback((event) => {
+    const clickedNode = nodes.find(
+      (node) =>
+        Math.abs(node.x - event.offsetX) < 15 &&
+        Math.abs(node.y - event.offsetY) < 15
+    );
+
+    if (clickedNode) {
+      if (!startNode) {
+        setStartNode(clickedNode);
+        setTempEdge({ source: clickedNode, target: { x: event.offsetX, y: event.offsetY } });
+      } else if (startNode.id !== clickedNode.id) {
+        const newEdge = { id: Date.now(), source: startNode.id, target: clickedNode.id };
+        setEdges(prevEdges => [...prevEdges, newEdge]);
+        setStartNode(null);
+        setTempEdge(null);
+      }
+    } else {
+      setStartNode(null);
+      setTempEdge(null);
+    }
+  }, [nodes, startNode, setEdges]);
+
+  const handleRightClick = useCallback((event) => {
+    event.preventDefault();
+    const { offsetX, offsetY } = event;
+
+    // Check if clicked on a node
+    const clickedNode = nodes.find(
+      (node) => Math.abs(node.x - offsetX) < 15 && Math.abs(node.y - offsetY) < 15
+    );
+
+    if (clickedNode) {
+      setNodes(prevNodes => prevNodes.filter(node => node.id !== clickedNode.id));
+      setEdges(prevEdges => prevEdges.filter(
+        edge => edge.source !== clickedNode.id && edge.target !== clickedNode.id
+      ));
+    } else {
+      // Check if clicked on an edge
+      const clickedEdge = edges.find((edge) => {
+        const sourceNode = nodes.find((node) => node.id === edge.source);
+        const targetNode = nodes.find((node) => node.id === edge.target);
+        if (!sourceNode || !targetNode) return false;
+        
+        const edgeLength = Math.sqrt(Math.pow(targetNode.x - sourceNode.x, 2) + Math.pow(targetNode.y - sourceNode.y, 2));
+        const clickDistance = Math.abs((targetNode.y - sourceNode.y) * offsetX - (targetNode.x - sourceNode.x) * offsetY + targetNode.x * sourceNode.y - targetNode.y * sourceNode.x) / edgeLength;
+        
+        return clickDistance < 5; // Increased click area for easier deletion
+      });
+
+      if (clickedEdge) {
+        setEdges(prevEdges => prevEdges.filter(edge => edge.id !== clickedEdge.id));
+      }
+    }
+  }, [nodes, edges, setNodes, setEdges]);
+
+  const handleMouseMove = useCallback((event) => {
+    if (startNode) {
+      setTempEdge(prev => ({ ...prev, target: { x: event.offsetX, y: event.offsetY } }));
+    }
+  }, [startNode]);
 
   useEffect(() => {
-    const svg = d3.select(svgRef.current)
-      .attr('width', 800)
-      .attr('height', 600)
-      .style('border', '1px solid black');
-
-    const handleSvgRightClick = (event) => {
-      if (isSaved || mockLine) return;
-      event.preventDefault();
-      const [x, y] = d3.pointer(event);
-      if (nodes.some(node => Math.hypot(node.x - x, node.y - y) < CLICK_AREA_RADIUS)) return;
-      const id = nodeId.current++;
-      setNodes(prevNodes => [...prevNodes, { id, x, y }]);
-    };
-
-    const handleNodeRightClick = (event, node) => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (isSaved) return;
-      
-      if (!mockLine) {
-        setMockLine({ source: node, x: node.x, y: node.y });
-      } else if (mockLine.source.id !== node.id) {
-        // Check for duplicate edges
-        const isDuplicate = edges.some(edge => 
-          (edge.source === mockLine.source.id && edge.target === node.id) ||
-          (edge.source === node.id && edge.target === mockLine.source.id)
-        );
-        if (!isDuplicate) {
-          setEdges(prevEdges => [...prevEdges, { source: mockLine.source.id, target: node.id }]);
-        }
-        setMockLine(null);
-      } else {
-        setMockLine(null);
-      }
-    };
-
-    const handleNodeClick = (event, node) => {
-      if (isSaved || mockLine) return;
-      event.stopPropagation();
-      setNodes(prevNodes => prevNodes.filter(n => n.id !== node.id));
-      setEdges(prevEdges => prevEdges.filter(e => e.source !== node.id && e.target !== node.id));
-    };
-
-    const handleEdgeClick = (event, edge) => {
-      if (isSaved) return;
-      event.stopPropagation();
-      setEdges(prevEdges => prevEdges.filter(e => e !== edge));
-    };
-
-    svg.on('contextmenu', handleSvgRightClick);
-
-    const updateGraph = () => {
-      const nodeSelection = svg.selectAll('.node')
-        .data(nodes, d => d.id);
-
-      const nodeEnter = nodeSelection.enter()
-        .append('g')
-        .attr('class', 'node')
-        .on('contextmenu', handleNodeRightClick)
-        .on('click', handleNodeClick);
-
-      nodeEnter.append('circle')
-        .attr('class', 'click-area')
-        .attr('r', CLICK_AREA_RADIUS)
-        .attr('cx', d => d.x)
-        .attr('cy', d => d.y)
-        .style('fill', 'transparent')
-        .style('cursor', 'pointer');
-
-      nodeEnter.append('circle')
-        .attr('class', 'visible-node')
-        .attr('r', NODE_RADIUS)
-        .attr('cx', d => d.x)
-        .attr('cy', d => d.y)
-        .style('fill', 'blue');
-
-      nodeEnter.append('text')
-        .attr('x', d => d.x)
-        .attr('y', d => d.y)
-        .attr('dy', '.35em')
-        .attr('text-anchor', 'middle')
-        .style('fill', 'white')
-        .style('pointer-events', 'none')
-        .text(d => d.id);
-
-      nodeSelection.exit().remove();
-
-      const edgeSelection = svg.selectAll('.edge')
-        .data(edges, d => `${d.source}-${d.target}`);
-
-      edgeSelection.enter()
-        .append('line')
-        .attr('class', 'edge')
-        .merge(edgeSelection)
-        .attr('x1', d => nodes.find(n => n.id === d.source)?.x)
-        .attr('y1', d => nodes.find(n => n.id === d.source)?.y)
-        .attr('x2', d => nodes.find(n => n.id === d.target)?.x)
-        .attr('y2', d => nodes.find(n => n.id === d.target)?.y)
-        .style('stroke', 'black')
-        .style('stroke-width', 2)
-        .on('click', handleEdgeClick);
-
-      edgeSelection.exit().remove();
-
-      svg.selectAll('.mock-line').remove();
-      if (mockLine) {
-        svg.append('line')
-          .attr('class', 'mock-line')
-          .attr('x1', mockLine.source.x)
-          .attr('y1', mockLine.source.y)
-          .attr('x2', mockLine.x)
-          .attr('y2', mockLine.y)
-          .style('stroke', 'red')
-          .style('stroke-width', 2)
-          .style('stroke-dasharray', '5,5');
-      }
-    };
-
-    const handleMouseMove = (event) => {
-      if (mockLine) {
-        const [x, y] = d3.pointer(event);
-        setMockLine(prev => ({ ...prev, x, y }));
-      }
-    };
-
-    svg.on('mousemove', handleMouseMove);
-
-    svg.node().addEventListener('contextmenu', (event) => event.preventDefault());
-
-    updateGraph();
+    const svg = svgRef.current;
+    svg.addEventListener('dblclick', handleDoubleClick);
+    svg.addEventListener('click', handleClick);
+    svg.addEventListener('contextmenu', handleRightClick);
+    svg.addEventListener('mousemove', handleMouseMove);
 
     return () => {
-      svg.on('contextmenu', null);
-      svg.on('mousemove', null);
-      svg.node().removeEventListener('contextmenu', (event) => event.preventDefault());
+      svg.removeEventListener('dblclick', handleDoubleClick);
+      svg.removeEventListener('click', handleClick);
+      svg.removeEventListener('contextmenu', handleRightClick);
+      svg.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [nodes, edges, isSaved, mockLine]);
+  }, [handleDoubleClick, handleClick, handleRightClick, handleMouseMove]);
 
-  const handleSaveGraph = () => {
-    setIsSaved(true);
+  const renderEdge = (edge, index, isTemp = false) => {
+    const sourceNode = nodes.find((node) => node.id === edge.source);
+    const targetNode = isTemp ? edge.target : nodes.find((node) => node.id === edge.target);
+    
+    if (!sourceNode || !targetNode) return null;
+
+    const dx = targetNode.x - sourceNode.x;
+    const dy = targetNode.y - sourceNode.y;
+    const angle = Math.atan2(dy, dx);
+
+    const arrowSize = 10;
+    const arrowX = targetNode.x - arrowSize * Math.cos(angle);
+    const arrowY = targetNode.y - arrowSize * Math.sin(angle);
+
+    return (
+      <g key={isTemp ? 'temp' : edge.id}>
+        <line
+          x1={sourceNode.x}
+          y1={sourceNode.y}
+          x2={targetNode.x}
+          y2={targetNode.y}
+          stroke={isTemp ? "gray" : "black"}
+          strokeWidth="3"
+          strokeDasharray={isTemp ? "5,5" : "none"}
+        />
+        {!isTemp && (
+          <polygon
+            points={`${arrowX},${arrowY} ${arrowX - arrowSize * Math.cos(angle - Math.PI / 6)},${arrowY - arrowSize * Math.sin(angle - Math.PI / 6)} ${arrowX - arrowSize * Math.cos(angle + Math.PI / 6)},${arrowY - arrowSize * Math.sin(angle + Math.PI / 6)}`}
+            fill="black"
+          />
+        )}
+      </g>
+    );
   };
 
   return (
-    <div>
-      <button onClick={handleSaveGraph} disabled={isSaved}>Save Graph</button>
-      <svg ref={svgRef}></svg>
-    </div>
+    <svg ref={svgRef} className="graph-builder" width="100%" height="100%">
+      {edges.map((edge, index) => renderEdge(edge, index))}
+      {tempEdge && renderEdge(tempEdge, -1, true)}
+      {nodes.map((node) => (
+        <g key={node.id}>
+          <circle
+            cx={node.x}
+            cy={node.y}
+            r="15"
+            fill={node.id === startNode?.id ? "yellow" : "lightblue"}
+            stroke="blue"
+            strokeWidth="2"
+          />
+          <text
+            x={node.x}
+            y={node.y}
+            dy=".3em"
+            textAnchor="middle"
+            fill="black"
+            fontSize="12px"
+          >
+            {node.id}
+          </text>
+        </g>
+      ))}
+    </svg>
   );
 };
 
-export default Graph;
+export default GraphBuilder;

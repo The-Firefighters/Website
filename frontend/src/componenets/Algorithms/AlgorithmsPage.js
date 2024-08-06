@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import GraphBuilder from './GraphBuilder';
 import ChooseAlgo from './ChooseAlgo';
 import LoadGraph from './LoadGraph';
@@ -10,11 +10,24 @@ const AlgorithmPage = () => {
   const [selectedAlgorithm, setSelectedAlgorithm] = useState('');
   const [budget, setBudget] = useState('');
 
+  const memoizedSetNodes = useCallback((newNodes) => {
+    setNodes(newNodes);
+  }, []);
+
+  const memoizedSetEdges = useCallback((newEdges) => {
+    setEdges(newEdges);
+  }, []);
+
   return (
     <div className="algorithm-page">
       <div className="content-wrapper">
         <div className="graph-box">
-          <GraphBuilder nodes={nodes} setNodes={setNodes} edges={edges} setEdges={setEdges} />
+          <GraphBuilder 
+            nodes={nodes} 
+            setNodes={memoizedSetNodes} 
+            edges={edges} 
+            setEdges={memoizedSetEdges} 
+          />
         </div>
         <div className="info-box">
           <div className="section">
@@ -26,7 +39,7 @@ const AlgorithmPage = () => {
             </ul>
           </div>
           <div className="section">
-            <LoadGraph setNodes={setNodes} setEdges={setEdges} />
+            <LoadGraph setNodes={memoizedSetNodes} setEdges={memoizedSetEdges} />
           </div>
           <div className="section">
             <ChooseAlgo selectedAlgorithm={selectedAlgorithm} setSelectedAlgorithm={setSelectedAlgorithm} />
