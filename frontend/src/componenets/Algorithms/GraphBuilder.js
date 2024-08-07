@@ -1,3 +1,4 @@
+// GraphBuilder.js
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './GraphBuilder.css';
 
@@ -9,12 +10,38 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved }) => {
   const svgRef = useRef(null);
   const nodeIdRef = useRef(0);
 
+  const findNonOverlappingPosition = (newNode, existingNodes) => {
+    const minDistance = 40; // Minimum distance between nodes
+    let attempts = 0;
+    const maxAttempts = 100;
+
+    while (attempts < maxAttempts) {
+      const overlapping = existingNodes.some(node => 
+        Math.sqrt(Math.pow(node.x - newNode.x, 2) + Math.pow(node.y - newNode.y, 2)) < minDistance
+      );
+
+      if (!overlapping) {
+        return { x: newNode.x, y: newNode.y };
+      }
+
+      newNode.x += Math.random() * 20 - 10;
+      newNode.y += Math.random() * 20 - 10;
+      attempts++;
+    }
+
+    return { x: newNode.x, y: newNode.y };
+  };
+
   const handleDoubleClick = useCallback((event) => {
     if (isGraphSaved) return;
     const { offsetX, offsetY } = event;
-    const newNode = { id: nodeIdRef.current++, x: offsetX, y: offsetY };
+    nodeIdRef.current = Math.max(...nodes.map(n => n.id), nodeIdRef.current) + 1;
+    const newNode = { id: nodeIdRef.current, x: offsetX, y: offsetY };
+    const nonOverlappingPosition = findNonOverlappingPosition(newNode, nodes);
+    newNode.x = nonOverlappingPosition.x;
+    newNode.y = nonOverlappingPosition.y;
     setNodes(prevNodes => [...prevNodes, newNode]);
-  }, [setNodes, isGraphSaved]);
+  }, [setNodes, isGraphSaved, nodes]);
 
   const handleClick = useCallback((event) => {
     if (isGraphSaved || isDragging) return;

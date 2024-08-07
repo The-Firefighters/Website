@@ -1,11 +1,36 @@
-//this will allow the users to load a graph from a json file, we need to explain how our json file should be (maybe give an example that can be modified)
-//or maybe we should consider chaning the json file to look like exactly in networkX
 // LoadGraph.js
 import React, { useState } from 'react';
 import './LoadGraph.css';
 
 const LoadGraph = ({ setNodes, setEdges }) => {
   const [fileName, setFileName] = useState('');
+
+  const centerGraph = (nodes) => {
+    const minX = Math.min(...nodes.map(n => n.x));
+    const maxX = Math.max(...nodes.map(n => n.x));
+    const minY = Math.min(...nodes.map(n => n.y));
+    const maxY = Math.max(...nodes.map(n => n.y));
+    
+    const centerX = (minX + maxX) / 2;
+    const centerY = (minY + maxY) / 2;
+    
+    const svgWidth = 800; // Adjust based on your SVG size
+    const svgHeight = 600; // Adjust based on your SVG size
+    
+    return nodes.map(node => ({
+      ...node,
+      x: node.x - centerX + svgWidth / 2,
+      y: node.y - centerY + svgHeight / 2
+    }));
+  };
+
+  const ensureUniqueIds = (nodes) => {
+    let maxId = Math.max(...nodes.map(n => n.id), 0);
+    return nodes.map(node => ({
+      ...node,
+      id: node.id || ++maxId
+    }));
+  };
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -16,20 +41,21 @@ const LoadGraph = ({ setNodes, setEdges }) => {
         try {
           const data = JSON.parse(e.target.result);
           if (data.nodes && data.edges) {
-            // Process nodes to add positions if they're not provided
-            const processedNodes = data.nodes.map((node, index) => ({
+            const processedNodes = ensureUniqueIds(data.nodes.map((node, index) => ({
               id: node.id || index,
               label: node.label || `Node ${index + 1}`,
-              // We'll let the GraphBuilder handle positioning
-            }));
+              x: node.x || Math.random() * 800,
+              y: node.y || Math.random() * 600,
+            })));
             
-            // Process edges to ensure they use the correct node references
+            const centeredNodes = centerGraph(processedNodes);
+            
             const processedEdges = data.edges.map(edge => ({
               source: edge.source,
               target: edge.target,
             }));
 
-            setNodes(processedNodes);
+            setNodes(centeredNodes);
             setEdges(processedEdges);
           } else {
             alert('Invalid file format. Please ensure your JSON file contains "nodes" and "edges" arrays.');
