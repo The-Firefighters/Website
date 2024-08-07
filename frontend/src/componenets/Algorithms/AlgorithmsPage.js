@@ -7,13 +7,9 @@ import './AlgorithmsPage.css';
 const AlgorithmPage = () => {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState('');
   const [isGraphSaved, setIsGraphSaved] = useState(false);
   const [isAlgorithmRunning, setIsAlgorithmRunning] = useState(false);
-  const [sourceNode, setSourceNode] = useState('');
-  const [targetNodes, setTargetNodes] = useState([]);
-  const [budget, setBudget] = useState('');
-  const [errors, setErrors] = useState({});
+  const [shouldRunAlgorithm, setShouldRunAlgorithm] = useState(false);
 
   const memoizedSetNodes = useCallback((newNodes) => {
     setNodes(newNodes);
@@ -27,48 +23,8 @@ const AlgorithmPage = () => {
     if (!isGraphSaved) {
       setIsGraphSaved(true);
     } else {
-      const newErrors = {};
-      if (!selectedAlgorithm) newErrors.algorithm = 'Please select an algorithm';
-      if (!sourceNode) newErrors.sourceNode = 'Please select a source node';
-      if (selectedAlgorithm.toLowerCase().includes('maxsave') && !budget) {
-        newErrors.budget = 'Please enter a budget';
-      }
-
-      if (Object.keys(newErrors).length === 0) {
-        setIsAlgorithmRunning(true);
-        // Run the algorithm here
-      } else {
-        setErrors(newErrors);
-      }
+      setShouldRunAlgorithm(true);
     }
-  };
-
-  const handleSourceNodeChange = (nodeId) => {
-    if (nodeId === "") return; // Ignore selection of the disabled option
-    const newSourceNode = Number(nodeId);
-    setSourceNode(newSourceNode);
-    setErrors(prev => ({ ...prev, sourceNode: null }));
-    
-    setNodes(prevNodes => prevNodes.map(node => ({
-      ...node,
-      color: node.id === newSourceNode ? 'red' : (targetNodes.includes(node.id) ? 'white' : 'lightblue')
-    })));
-  };
-
-  const handleTargetNodesChange = (nodeId) => {
-    const newNodeId = Number(nodeId);
-    setTargetNodes(prev => {
-      const newTargets = prev.includes(newNodeId)
-        ? prev.filter(id => id !== newNodeId)
-        : [...prev, newNodeId];
-      
-      setNodes(prevNodes => prevNodes.map(node => ({
-        ...node,
-        color: node.id === sourceNode ? 'red' : (newTargets.includes(node.id) ? 'white' : 'lightblue')
-      })));
-      
-      return newTargets;
-    });
   };
 
   return (
@@ -100,69 +56,14 @@ const AlgorithmPage = () => {
             </>
           )}
           {isGraphSaved && (
-            <>
-              <div className="section">
-                <ChooseAlgo 
-                  selectedAlgorithm={selectedAlgorithm} 
-                  setSelectedAlgorithm={(algo) => {
-                    setSelectedAlgorithm(algo);
-                    setErrors(prev => ({ ...prev, algorithm: null }));
-                  }} 
-                  disabled={isAlgorithmRunning}
-                />
-                {errors.algorithm && <div className="error">{errors.algorithm}</div>}
-              </div>
-              <div className="section">
-                <strong>Source Node:</strong>
-                <select 
-                  value={sourceNode}
-                  onChange={(e) => handleSourceNodeChange(e.target.value)}
-                  disabled={isAlgorithmRunning}
-                >
-                  <option value="" disabled>Select a source node</option>
-                  {nodes.map(node => (
-                    <option key={node.id} value={node.id}>
-                      Node {node.id}
-                    </option>
-                  ))}
-                </select>
-                {errors.sourceNode && <div className="error">{errors.sourceNode}</div>}
-              </div>
-              <div className="section">
-                <strong>Target Nodes:</strong>
-                <select 
-                  multiple
-                  value={targetNodes}
-                  onChange={(e) => handleTargetNodesChange(e.target.value)}
-                  disabled={isAlgorithmRunning}
-                >
-                  {nodes
-                    .filter(node => node.id !== sourceNode)
-                    .map(node => (
-                      <option key={node.id} value={node.id}>
-                        Node {node.id}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              {selectedAlgorithm.toLowerCase().includes('maxsave') && (
-                <div className="section">
-                  <strong>Add a Budget</strong>
-                  <input 
-                    type="number" 
-                    min="1" 
-                    value={budget} 
-                    onChange={(e) => {
-                      setBudget(e.target.value);
-                      setErrors(prev => ({ ...prev, budget: null }));
-                    }}
-                    placeholder="Enter budget (>0)"
-                    disabled={isAlgorithmRunning}
-                  />
-                  {errors.budget && <div className="error">{errors.budget}</div>}
-                </div>
-              )}
-            </>
+            <ChooseAlgo 
+              nodes={nodes}
+              setNodes={setNodes}
+              isAlgorithmRunning={isAlgorithmRunning}
+              setIsAlgorithmRunning={setIsAlgorithmRunning}
+              shouldRunAlgorithm={shouldRunAlgorithm}
+              setShouldRunAlgorithm={setShouldRunAlgorithm}
+            />
           )}
           <button 
             className={`run-algorithm ${isAlgorithmRunning ? 'disabled' : ''}`}
