@@ -18,6 +18,9 @@ const ChooseAlgo = ({ nodes, setNodes, isAlgorithmRunning, setIsAlgorithmRunning
     'Heuristic Non-Spreading MinBudget'
   ];
 
+  // Sort nodes by ID
+  const sortedNodes = [...nodes].sort((a, b) => a.id - b.id);
+
   const validateInputs = useCallback(() => {
     const newErrors = {};
     if (!selectedAlgorithm) newErrors.algorithm = 'Please select an algorithm';
@@ -66,7 +69,7 @@ const ChooseAlgo = ({ nodes, setNodes, isAlgorithmRunning, setIsAlgorithmRunning
     setTargetNodes(prev => {
       const newTargets = prev.includes(newNodeId)
         ? prev.filter(id => id !== newNodeId)
-        : [...prev, newNodeId];
+        : [...prev, newNodeId].sort((a, b) => a - b); // Sort target nodes
       
       setNodes(prevNodes => prevNodes.map(node => ({
         ...node,
@@ -102,9 +105,9 @@ const ChooseAlgo = ({ nodes, setNodes, isAlgorithmRunning, setIsAlgorithmRunning
           disabled={isAlgorithmRunning}
         >
           <option value="" disabled>Select a source node</option>
-          {nodes.map(node => (
+          {sortedNodes.map(node => (
             <option key={node.id} value={node.id}>
-              Node {node.id}
+              {node.label || `Node ${node.id}`}
             </option>
           ))}
         </select>
@@ -118,11 +121,11 @@ const ChooseAlgo = ({ nodes, setNodes, isAlgorithmRunning, setIsAlgorithmRunning
           onChange={(e) => handleTargetNodesChange(e.target.value)}
           disabled={isAlgorithmRunning}
         >
-          {nodes
+          {sortedNodes
             .filter(node => node.id !== sourceNode)
             .map(node => (
               <option key={node.id} value={node.id}>
-                Node {node.id}
+                {node.label || `Node ${node.id}`}
               </option>
             ))}
         </select>

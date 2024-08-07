@@ -8,7 +8,16 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [draggedNode, setDraggedNode] = useState(null);
   const svgRef = useRef(null);
-  const nodeIdRef = useRef(0);
+
+  // Function to find the lowest available ID
+  const findLowestAvailableId = useCallback(() => {
+    const usedIds = new Set(nodes.map(node => node.id));
+    let newId = 0;
+    while (usedIds.has(newId)) {
+      newId++;
+    }
+    return newId;
+  }, [nodes]);
 
   const findNonOverlappingPosition = (newNode, existingNodes) => {
     const minDistance = 40; // Minimum distance between nodes
@@ -35,13 +44,13 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved }) => {
   const handleDoubleClick = useCallback((event) => {
     if (isGraphSaved) return;
     const { offsetX, offsetY } = event;
-    nodeIdRef.current = Math.max(...nodes.map(n => n.id), nodeIdRef.current) + 1;
-    const newNode = { id: nodeIdRef.current, x: offsetX, y: offsetY };
+    const newId = findLowestAvailableId();
+    const newNode = { id: newId, x: offsetX, y: offsetY };
     const nonOverlappingPosition = findNonOverlappingPosition(newNode, nodes);
     newNode.x = nonOverlappingPosition.x;
     newNode.y = nonOverlappingPosition.y;
     setNodes(prevNodes => [...prevNodes, newNode]);
-  }, [setNodes, isGraphSaved, nodes]);
+  }, [setNodes, isGraphSaved, nodes, findLowestAvailableId]);
 
   const handleClick = useCallback((event) => {
     if (isGraphSaved || isDragging) return;
