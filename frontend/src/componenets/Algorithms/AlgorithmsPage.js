@@ -9,6 +9,7 @@ const AlgorithmPage = () => {
   const [edges, setEdges] = useState([]);
   const [isGraphSaved, setIsGraphSaved] = useState(false);
   const [isAlgorithmRunning, setIsAlgorithmRunning] = useState(false);
+  const [shouldRunAlgorithm, setShouldRunAlgorithm] = useState(false);
 
   const memoizedSetNodes = useCallback((newNodes) => {
     setNodes(newNodes);
@@ -22,10 +23,7 @@ const AlgorithmPage = () => {
     if (!isGraphSaved) {
       setIsGraphSaved(true);
     } else {
-      setIsAlgorithmRunning(true);
-      // Run your algorithm here. Ensure you reset `isAlgorithmRunning` to false after completion
-      // Example: 
-      // runAlgorithm().then(() => setIsAlgorithmRunning(false));
+      setShouldRunAlgorithm(true);
     }
   };
 
@@ -89,16 +87,18 @@ const AlgorithmPage = () => {
               setNodes={setNodes}
               isAlgorithmRunning={isAlgorithmRunning}
               setIsAlgorithmRunning={setIsAlgorithmRunning}
+              shouldRunAlgorithm={shouldRunAlgorithm}
+              setShouldRunAlgorithm={setShouldRunAlgorithm}
             />
           )}
           <button
             className={`run-algorithm ${isAlgorithmRunning ? 'disabled' : ''}`}
             onClick={handleButtonClick}
-            disabled={isAlgorithmRunning}
+            disabled={isAlgorithmRunning || shouldRunAlgorithm}
           >
             {isGraphSaved
               ? (isAlgorithmRunning ? "Algorithm Running..." : "Run the Algorithm!")
-              : "Save Graph"}
+                          : "Save Graph"}
           </button>
         </div>
       </div>
@@ -107,3 +107,4 @@ const AlgorithmPage = () => {
 };
 
 export default AlgorithmPage;
+

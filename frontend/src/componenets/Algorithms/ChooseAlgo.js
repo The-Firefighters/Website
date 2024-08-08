@@ -30,8 +30,6 @@ const ChooseAlgo = ({ nodes, setNodes, isAlgorithmRunning, setIsAlgorithmRunning
         newErrors.budget = 'Please enter a budget';
       } else if (!Number.isInteger(Number(budget)) || Number(budget) <= 0) {
         newErrors.budget = 'Budget must be a positive integer';
-      } else if (!Number.isInteger(Number(budget))) {
-        newErrors.budget = 'Budget must be an integer';
       }
     }
     setErrors(newErrors);
