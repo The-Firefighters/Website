@@ -7,12 +7,9 @@ import './AlgorithmsPage.css';
 const AlgorithmPage = () => {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState('');
-  const [budget, setBudget] = useState('');
   const [isGraphSaved, setIsGraphSaved] = useState(false);
   const [isAlgorithmRunning, setIsAlgorithmRunning] = useState(false);
-  const [sourceNode, setSourceNode] = useState(null);
-  const [targetNodes, setTargetNodes] = useState([]);
+  const [shouldRunAlgorithm, setShouldRunAlgorithm] = useState(false);
 
   const memoizedSetNodes = useCallback((newNodes) => {
     setNodes(newNodes);
@@ -26,41 +23,39 @@ const AlgorithmPage = () => {
     if (!isGraphSaved) {
       setIsGraphSaved(true);
     } else {
-      setIsAlgorithmRunning(true);
+      setShouldRunAlgorithm(true);
     }
   };
 
-  const handleSourceNodeChange = (nodeId) => {
-    setSourceNode(nodeId);
-    setNodes(prevNodes => prevNodes.map(node => ({
-      ...node,
-      color: node.id === nodeId ? 'red' : (targetNodes.includes(node.id) ? 'white' : 'lightblue')
-    })));
-  };
+  const handleGraphDownload = () => {
+    const graphData = {
+      nodes: nodes.map(({ id, label, x, y }) => ({ id, label, x, y })),
+      edges: edges.map(({ source, target }) => ({ source, target }))
+    };
 
-  const handleTargetNodesChange = (nodeId) => {
-    setTargetNodes(prev => {
-      const newTargets = prev.includes(nodeId)
-        ? prev.filter(id => id !== nodeId)
-        : [...prev, nodeId];
-      setNodes(prevNodes => prevNodes.map(node => ({
-        ...node,
-        color: node.id === sourceNode ? 'red' : (newTargets.includes(node.id) ? 'white' : 'lightblue')
-      })));
-      return newTargets;
-    });
+    const jsonData = JSON.stringify(graphData, null, 2);
+    const blob = new Blob([jsonData], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.download = 'graph.json';
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
     <div className="algorithm-page">
       <div className="content-wrapper">
         <div className="graph-box">
-          <GraphBuilder 
-            nodes={nodes} 
-            setNodes={memoizedSetNodes} 
-            edges={edges} 
-            setEdges={memoizedSetEdges} 
+          <GraphBuilder
+            nodes={nodes}
+            setNodes={memoizedSetNodes}
+            edges={edges}
+            setEdges={memoizedSetEdges}
             isGraphSaved={isGraphSaved}
+            disabled={isAlgorithmRunning}
           />
         </div>
         <div className="info-box">
@@ -75,74 +70,35 @@ const AlgorithmPage = () => {
                 </ul>
               </div>
               <div className="section">
-                <LoadGraph setNodes={memoizedSetNodes} setEdges={memoizedSetEdges} />
+                <LoadGraph
+                  nodes={nodes}
+                  edges={edges}
+                  setNodes={memoizedSetNodes}
+                  setEdges={memoizedSetEdges}
+                  onGraphDownload={handleGraphDownload}
+                  disabled={isAlgorithmRunning}
+                />
               </div>
             </>
           )}
           {isGraphSaved && (
-            <>
-              <div className="section">
-                <ChooseAlgo 
-                  selectedAlgorithm={selectedAlgorithm} 
-                  setSelectedAlgorithm={setSelectedAlgorithm} 
-                  disabled={isAlgorithmRunning}
-                />
-              </div>
-              <div className="section">
-                <strong>Source Node:</strong>
-                <select 
-                  value={sourceNode || ''}
-                  onChange={(e) => handleSourceNodeChange(Number(e.target.value))}
-                  disabled={isAlgorithmRunning}
-                >
-                  <option value="">Select a source node</option>
-                  {nodes.map(node => (
-                    <option key={node.id} value={node.id}>
-                      Node {node.id}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="section">
-                <strong>Target Nodes:</strong>
-                <select 
-                  multiple
-                  value={targetNodes}
-                  onChange={(e) => handleTargetNodesChange(Number(e.target.value))}
-                  disabled={isAlgorithmRunning}
-                >
-                  {nodes
-                    .filter(node => node.id !== sourceNode)
-                    .map(node => (
-                      <option key={node.id} value={node.id}>
-                        Node {node.id}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              {selectedAlgorithm.toLowerCase().includes('maxsave') && (
-                <div className="section">
-                  <strong>Add a Budget</strong>
-                  <input 
-                    type="number" 
-                    min="1" 
-                    value={budget} 
-                    onChange={(e) => setBudget(e.target.value)}
-                    placeholder="Enter budget (>0)"
-                    disabled={isAlgorithmRunning}
-                  />
-                </div>
-              )}
-            </>
+            <ChooseAlgo
+              nodes={nodes}
+              setNodes={setNodes}
+              isAlgorithmRunning={isAlgorithmRunning}
+              setIsAlgorithmRunning={setIsAlgorithmRunning}
+              shouldRunAlgorithm={shouldRunAlgorithm}
+              setShouldRunAlgorithm={setShouldRunAlgorithm}
+            />
           )}
-          <button 
+          <button
             className={`run-algorithm ${isAlgorithmRunning ? 'disabled' : ''}`}
             onClick={handleButtonClick}
-            disabled={isAlgorithmRunning}
+            disabled={isAlgorithmRunning || shouldRunAlgorithm}
           >
-            {isGraphSaved 
-              ? (isAlgorithmRunning ? "Algorithm Running..." : "Run the Algorithm!") 
-              : "Save Graph"}
+            {isGraphSaved
+              ? (isAlgorithmRunning ? "Algorithm Running..." : "Run the Algorithm!")
+                          : "Save Graph"}
           </button>
         </div>
       </div>
@@ -151,3 +107,4 @@ const AlgorithmPage = () => {
 };
 
 export default AlgorithmPage;
+
