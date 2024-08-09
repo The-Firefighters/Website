@@ -1,38 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './LoadGraph.css';
 
-const LoadGraph = ({ nodes, edges, setNodes, setEdges, onGraphDownload }) => {
+const LoadGraph = ({ nodes, edges, setNodes, setEdges }) => {
+  const [selectedGraph, setSelectedGraph] = useState('');
+  const [availableGraphs, setAvailableGraphs] = useState([]);
   const [fileName, setFileName] = useState('');
 
-  const svgWidth = 800; // Adjust based on your SVG size
-  const svgHeight = 600; // Adjust based on your SVG size
+  const svgWidth = 800;
+  const svgHeight = 600;
 
-  const centerGraph = (nodes) => {
-    const validNodes = nodes.filter(node => isWithinRange(node));
-    if (validNodes.length === 0) return nodes; // If no valid nodes, skip centering
+  useEffect(() => {
+    fetch('/data/graph_list.json')
+      .then(response => response.json())
+      .then(data => setAvailableGraphs(data))
+      .catch(error => console.error('Error fetching graph list:', error));
+  }, []);
 
-    const minX = Math.min(...validNodes.map(n => n.x));
-    const maxX = Math.max(...validNodes.map(n => n.x));
-    const minY = Math.min(...validNodes.map(n => n.y));
-    const maxY = Math.max(...validNodes.map(n => n.y));
+  const generateLayout = (nodes) => {
+    const centerX = svgWidth / 2;
+    const centerY = svgHeight / 2;
+    const radius = Math.min(svgWidth, svgHeight) * 0.4;
 
-    const centerX = (minX + maxX) / 2;
-    const centerY = (minY + maxY) / 2;
-
-    return nodes.map(node => ({
-      ...node,
-      x: node.x - centerX + svgWidth / 2,
-      y: node.y - centerY + svgHeight / 2
-    }));
+    return nodes.map((node, index) => {
+      const angle = (index / nodes.length) * 2 * Math.PI;
+      return {
+        ...node,
+        x: centerX + radius * Math.cos(angle),
+        y: centerY + radius * Math.sin(angle),
+      };
+    });
   };
 
-  const isWithinRange = (node) => {
-    return (
-      typeof node.x === 'number' &&
-      typeof node.y === 'number' &&
-      node.x >= 0 && node.x <= svgWidth &&
-      node.y >= 0 && node.y <= svgHeight
-    );
+  const processGraphData = (data) => {
+    if (Array.isArray(data.nodes) && Array.isArray(data.edges)) {
+      const processedNodes = generateLayout(data.nodes);
+      const processedEdges = data.edges.map(edge => ({
+        source: edge.source,
+        target: edge.target,
+      }));
+
+      setNodes(processedNodes);
+      setEdges(processedEdges);
+    } else {
+      alert('Invalid file format. Please ensure your JSON file contains "nodes" and "edges" arrays.');
+    }
+  };
+
+  const handleGraphSelect = (event) => {
+    const selectedFile = event.target.value;
+    setSelectedGraph(selectedFile);
+
+    if (selectedFile) {
+      fetch(`/data/${selectedFile}`)
+        .then(response => response.json())
+        .then(processGraphData)
+        .catch(error => {
+          alert('Error loading graph. Please try again.');
+          console.error('Error:', error);
+        });
+    }
   };
 
   const handleFileUpload = (event) => {
@@ -43,34 +69,7 @@ const LoadGraph = ({ nodes, edges, setNodes, setEdges, onGraphDownload }) => {
       reader.onload = (e) => {
         try {
           const data = JSON.parse(e.target.result);
-          if (Array.isArray(data.nodes) && Array.isArray(data.edges)) {
-            let shouldCenter = false;
-            let processedNodes = data.nodes.map((node, index) => {
-              if (!isWithinRange(node)) {
-                shouldCenter = true;
-                return {
-                  id: node.id || index,
-                  x: node.x !== undefined ? node.x : Math.random() * svgWidth,
-                  y: node.y !== undefined ? node.y : Math.random() * svgHeight,
-                };
-              }
-              return node;
-            });
-
-            if (shouldCenter) {
-              processedNodes = centerGraph(processedNodes);
-            }
-
-            const processedEdges = data.edges.map(edge => ({
-              source: edge.source,
-              target: edge.target,
-            }));
-
-            setNodes(processedNodes);
-            setEdges(processedEdges);
-          } else {
-            alert('Invalid file format. Please ensure your JSON file contains "nodes" and "edges" arrays.');
-          }
+          processGraphData(data);
         } catch (error) {
           alert('Error parsing JSON file. Please ensure the file is valid JSON.');
         }
@@ -81,11 +80,7 @@ const LoadGraph = ({ nodes, edges, setNodes, setEdges, onGraphDownload }) => {
 
   const handleGraphDownload = () => {
     const data = {
-      nodes: nodes.map(node => ({
-        id: node.id,
-        x: node.x,
-        y: node.y
-      })),
+      nodes: nodes.map(({ id, label }) => ({ id, label })),
       edges: edges.map(edge => ({
         source: edge.source,
         target: edge.target
@@ -105,6 +100,18 @@ const LoadGraph = ({ nodes, edges, setNodes, setEdges, onGraphDownload }) => {
   return (
     <div className="load-graph">
       <h3>Load Graph</h3>
+      <div className="graph-select-wrapper">
+        <select
+          value={selectedGraph}
+          onChange={handleGraphSelect}
+          className="graph-select"
+        >
+          <option value="">Select a predefined graph</option>
+          {availableGraphs.map(graph => (
+            <option key={graph} value={graph}>{graph}</option>
+          ))}
+        </select>
+      </div>
       <div className="file-input-wrapper">
         <input
           type="file"
@@ -118,7 +125,7 @@ const LoadGraph = ({ nodes, edges, setNodes, setEdges, onGraphDownload }) => {
       </div>
       <p className="file-format-info">
         JSON format: {`{
-  "nodes": [{"id": 1, "x": 100, "y": 200}, ...],
+  "nodes": [{"id": 1, "label": "Node 1"}, ...],
   "edges": [{"source": 1, "target": 2}, ...]
 }`}
       </p>
