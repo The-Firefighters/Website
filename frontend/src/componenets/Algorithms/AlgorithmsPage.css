@@ -1,3 +1,4 @@
+/* Global Styles */
 body,
 html {
     margin: 0;
@@ -7,6 +8,7 @@ html {
     font-size: 14px;
 }
 
+/* Algorithm Page */
 .algorithm-page {
     display: flex;
     flex-direction: column;
@@ -15,33 +17,37 @@ html {
     box-sizing: border-box;
 }
 
+/* Content Wrapper */
 .content-wrapper {
     display: flex;
     flex: 1;
     gap: 10px;
 }
 
+/* Graph Box */
 .graph-box {
     flex: 3;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 1px solid #555555;
+    border-radius: 6px;
     padding: 10px;
-    background-color: white;
+    background-color: #333333;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
+/* Info Box */
 .info-box {
     flex: 1;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 1px solid #555555;
+    border-radius: 6px;
     padding: 15px;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
     display: flex;
     flex-direction: column;
 }
 
+/* Section */
 .section {
     margin-bottom: 15px;
     display: flex;
@@ -53,6 +59,7 @@ html {
     margin-bottom: 5px;
 }
 
+/* List Styles */
 ul {
     margin: 0;
     padding-left: 20px;
@@ -62,46 +69,55 @@ li {
     margin-bottom: 5px;
 }
 
+/* Input Fields */
 select,
 input[type="file"],
 input[type="number"] {
     width: 100%;
-    padding: 8px;
+    padding: 12px;
     margin-top: 5px;
     font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 1px solid #555555;
+    border-radius: 6px;
     box-sizing: border-box;
+    background-color: #333333;
+    color: #ffffff;
 }
 
 select[multiple] {
     height: 100px;
 }
 
+/* Run Algorithm Button */
 .run-algorithm {
     display: block;
     width: 100%;
-    padding: 8px;
+    padding: 12px;
     margin-top: auto;
     font-size: 14px;
-    color: white;
-    background-color: #4CAF50;
+    color: #ffffff;
+    background-color: #7a47d8;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: background-color 0.3s ease;
 }
 
 .run-algorithm:hover {
-    background-color: #45a049;
+    background-color: #6a3cb8;
 }
 
+/* Disabled State */
 .disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
+/* Error Message */
 .error {
-    color: red;
+    color: #ff4d4d;
     font-size: 12px;
     margin-top: 5px;
+    font-family: 'Poppins', sans-serif;
 }

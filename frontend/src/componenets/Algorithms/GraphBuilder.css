@@ -1,11 +1,13 @@
+/* Graph Builder */
 .graph-builder {
     width: 100%;
     height: 100%;
-    border: 1px solid black;
+    border: 1px solid #000000;
     background-color: #f0f0f0;
     user-select: none;
 }
 
+/* Graph Builder Circle */
 .graph-builder circle {
     cursor: pointer;
     transition: fill 0.2s ease;
@@ -15,20 +17,24 @@
     fill: #a0d8ff;
 }
 
+/* Graph Builder Line */
 .graph-builder line {
     stroke-width: 2;
     cursor: pointer;
 }
 
+/* Graph Builder Text */
 .graph-builder text {
     user-select: none;
     pointer-events: none;
 }
 
+/* Graph Builder Polygon */
 .graph-builder polygon {
     pointer-events: none;
 }
 
+/* Graph Builder Temp Edge */
 .graph-builder .temp-edge {
     stroke-dasharray: 5, 5;
     stroke: red;
