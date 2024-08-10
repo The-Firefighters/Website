@@ -1,42 +1,55 @@
+/* Toolbar Container */
 .toolbar {
-  background-color: #d3d3d3;
-  /* Grayish color */
-  padding: 10px;
+  background: linear-gradient(135deg, #1e1e1e, #3a3a3a);
+  padding: 15px 20px; 
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  border-radius: 8px; 
 }
 
+/* Centered Title */
 .toolbar-title {
-  color: black;
+  color: #ffffff !important; 
   text-align: center;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  font-family: 'Poppins', sans-serif; 
+  font-weight: 600;
 }
 
+/* Title Heading */
 .toolbar-title h1 {
   margin: 0;
-  font-size: 24px;
+  font-size: 28px; 
+  letter-spacing: 1.2px; 
 }
 
+/* Buttons Container */
 .toolbar-buttons {
   display: flex;
 }
 
+/* Individual Button Styles */
 .toolbar-button {
-  background-color: #87CEFA;
-  /* Light blue */
+  background-color: #7a47d8; 
   border: none;
-  color: white;
-  padding: 10px;
-  margin: 0 5px;
+  color: #ffffff;
+  padding: 12px 15px; 
+  margin: 0 8px; 
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: 5px; 
   text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease; 
+  font-family: 'Poppins', sans-serif; 
+  font-weight: 500; 
 }
 
+/* Hover Effect */
 .toolbar-button:hover {
-  background-color: #1E90FF;
-  /* Darker blue on hover */
+  background-color: #6a3cb8; 
+  transform: translateY(-2px); 
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); 
 }

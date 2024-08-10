@@ -12,7 +12,7 @@ function HomeScreen() {
   return (
     <div className="home-screen">
       <div className="input-container">
-        <h2>The Problem</h2>
+      <h2 style={{ color: 'white' }}>The Problem</h2>
         <div className="text-box">
           {TheProblem}
         </div>
