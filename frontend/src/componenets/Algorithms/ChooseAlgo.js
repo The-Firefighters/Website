@@ -105,7 +105,7 @@ const ChooseAlgo = ({ nodes, setNodes, isAlgorithmRunning, setIsAlgorithmRunning
           <option value="" disabled>Select a source node</option>
           {sortedNodes.map(node => (
             <option key={node.id} value={node.id}>
-              {node.label || `Node ${node.id}`}
+              {node.id}
             </option>
           ))}
         </select>
@@ -123,7 +123,7 @@ const ChooseAlgo = ({ nodes, setNodes, isAlgorithmRunning, setIsAlgorithmRunning
             .filter(node => node.id !== sourceNode)
             .map(node => (
               <option key={node.id} value={node.id}>
-                {node.label || `Node ${node.id}`}
+                {node.id}
               </option>
             ))}
         </select>
