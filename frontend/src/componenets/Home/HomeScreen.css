@@ -1,95 +1,134 @@
-/* Home Screen Container */
+/* HomeScreen.css */
+
 .home-screen {
-  padding: 40px 20px; 
+  padding: 40px 20px;
   display: flex;
   justify-content: center;
-  background: linear-gradient(135deg, #ffffff, #ffffff); 
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  min-height: 100vh;
 }
 
-/* Input Container */
 .input-container {
   width: 90%;
-  max-width: 10000px;
+  max-width: 800px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  background-color: #333333; 
-  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3); 
-  border-radius: 8px; 
+  align-items: stretch;
+  background-color: #ffffff;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
   padding: 30px;
 }
 
-/* Text Box */
-.text-box {
-  width: 100%;
-  min-height: 100px;
-  margin: 10px 0;
-  padding: 15px;
-  font-size: 16px;
-  background-color: #444444; 
-  color: #ffffff; 
-  border: none;
-  border-radius: 6px; 
-  resize: none;
-  overflow: auto;
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.2); 
-}
-
-/* Method and Algorithm Containers */
-.method-container,
-.algorithm-container {
-  display: flex;
-  justify-content: space-between;
-  width: 95%;
-  margin-top: 20px;
-}
-
-/* Individual Method and Algorithm */
-.method,
-.algorithm {
-  width: 48%;
-}
-
-/* Section Headers */
 h2, h3, h4 {
-  font-family: 'Poppins', sans-serif; 
-  color: #ffffff; 
-  margin-bottom: 10px;
-}
-
-h2 {
-  font-size: 28px;
+  font-family: 'Poppins', sans-serif;
+  color: #333333;
   margin-bottom: 20px;
 }
 
+h2 {
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
 h3 {
-  font-size: 22px;
+  font-size: 24px;
+  margin-top: 30px;
 }
 
-h4 {
+.dropdown {
+  margin-bottom: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.dropdown:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-header {
+  background-color: #f8f9fa;
+  padding: 15px 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-header:hover {
+  background-color: #e9ecef;
+}
+
+.dropdown-header h4 {
+  margin: 0;
   font-size: 18px;
+  font-weight: 500;
 }
 
-/* Try It Out Button */
+.dropdown-header::after {
+  content: '\25BC';
+  font-size: 0.8em;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease, padding 0.5s ease;
+  background-color: #ffffff;
+}
+
+.dropdown-content p {
+  padding: 0 20px;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Active Dropdown Styles */
+.dropdown-header.active {
+  background-color: #e9ecef;
+}
+
+.dropdown-header.active::after {
+  transform: rotate(180deg);
+}
+
+.dropdown-content.active {
+  max-height: 300px;
+  padding: 15px 0;
+}
+
+.dropdown-content.active p {
+  opacity: 1;
+}
+
 .try-it-out-button {
   padding: 12px 25px;
-  background-color: #7a47d8; 
+  background-color: #7a47d8;
   border: none;
   color: #ffffff;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 25px;
   text-decoration: none;
   display: inline-block;
   margin-top: 30px;
   font-family: 'Poppins', sans-serif;
   font-size: 18px;
   font-weight: 500;
-  transition: background-color 0.3s ease, transform 0.2s ease; 
+  transition: all 0.3s ease;
+  align-self: center;
+  text-align: center;
 }
 
-/* Hover Effect for Button */
 .try-it-out-button:hover {
-  background-color: #6a3cb8; 
-  transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
+  background-color: #6a3cb8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }

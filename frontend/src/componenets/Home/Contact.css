@@ -1,13 +1,13 @@
-/* Contact.css */
-
+/* Contact Container */
 .contact {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
     font-family: Arial, sans-serif;
-    color: #333;
+    color: #333333;
 }
 
+/* Headings */
 h1, h2 {
     color: #2c3e50;
 }
@@ -24,20 +24,23 @@ h2 {
     margin-bottom: 1rem;
 }
 
+/* Section */
 section {
     margin-bottom: 3rem;
     background-color: #f9f9f9;
     padding: 1.5rem;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
+/* Member Grid */
 .member-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
 }
 
+/* Member Card */
 .member-card {
     background-color: white;
     border-radius: 8px;
@@ -56,6 +59,7 @@ section {
     object-fit: cover;
 }
 
+/* Member Card Text */
 .member-card h3 {
     font-size: 1.2rem;
     margin: 1rem;
@@ -66,6 +70,7 @@ section {
     font-size: 0.9rem;
 }
 
+/* Member Links */
 .member-links {
     display: flex;
     justify-content: space-around;
@@ -83,6 +88,7 @@ section {
     color: #2980b9;
 }
 
+/* Project and Contact Info Links */
 .project-links a,
 .contact-info a {
     display: inline-block;
@@ -100,6 +106,7 @@ section {
     background-color: #2980b9;
 }
 
+/* Responsive Styles */
 @media (max-width: 768px) {
     .contact {
         padding: 1rem;
