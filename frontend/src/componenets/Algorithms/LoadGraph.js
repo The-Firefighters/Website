@@ -22,6 +22,9 @@ const LoadGraph = ({ nodes, edges, setNodes, setEdges }) => {
     const radius = Math.min(svgWidth, svgHeight) * 0.4;
 
     return nodes.map((node, index) => {
+      if (node.x !== undefined && node.y !== undefined) {
+        return node;
+      }
       const angle = (index / nodes.length) * 2 * Math.PI;
       return {
         ...node,
@@ -80,7 +83,7 @@ const LoadGraph = ({ nodes, edges, setNodes, setEdges }) => {
 
   const handleGraphDownload = () => {
     const data = {
-      nodes: nodes.map(({ id, label }) => ({ id, label })),
+      nodes: nodes.map(({ id, x, y }) => ({ id, x, y })),
       edges: edges.map(edge => ({
         source: edge.source,
         target: edge.target
@@ -100,32 +103,38 @@ const LoadGraph = ({ nodes, edges, setNodes, setEdges }) => {
   return (
     <div className="load-graph">
       <h3>Load Graph</h3>
-      <div className="graph-select-wrapper">
-        <select
-          value={selectedGraph}
-          onChange={handleGraphSelect}
-          className="graph-select"
-        >
-          <option value="">Select a predefined graph</option>
-          {availableGraphs.map(graph => (
-            <option key={graph} value={graph}>{graph}</option>
-          ))}
-        </select>
+      <div className="section">
+        <strong>Or, Choose Predefined Graph:</strong>
+        <div className="graph-select-wrapper">
+          <select
+            value={selectedGraph}
+            onChange={handleGraphSelect}
+            className="graph-select"
+          >
+            <option value="">Select a predefined graph</option>
+            {availableGraphs.map(graph => (
+              <option key={graph} value={graph}>{graph}</option>
+            ))}
+          </select>
+        </div>
       </div>
-      <div className="file-input-wrapper">
-        <input
-          type="file"
-          accept=".json"
-          onChange={handleFileUpload}
-          id="file-upload"
-        />
-        <label htmlFor="file-upload" className="file-upload-label">
-          {fileName || 'Choose a JSON file'}
-        </label>
+      <div className="section">
+        <strong>Load Custom Graph:</strong>
+        <div className="file-input-wrapper">
+          <input
+            type="file"
+            accept=".json"
+            onChange={handleFileUpload}
+            id="file-upload"
+          />
+          <label htmlFor="file-upload" className="file-upload-label">
+            {fileName || 'Choose a JSON file'}
+          </label>
+        </div>
       </div>
       <p className="file-format-info">
         JSON format: {`{
-  "nodes": [{"id": 1, "label": "Node 1"}, ...],
+  "nodes": [{"id": 1, "x": 100, "y": 200}, ...],
   "edges": [{"source": 1, "target": 2}, ...]
 }`}
       </p>
