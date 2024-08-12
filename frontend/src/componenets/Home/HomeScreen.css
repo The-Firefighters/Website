@@ -2,7 +2,7 @@
   padding: 40px 20px;
   display: flex;
   justify-content: center;
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  background: #F5F5F5;
   min-height: 100vh;
 }
 
@@ -12,7 +12,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  background-color: #ffffff;
+  background-color: #FFFFFF;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   padding: 30px;
@@ -43,12 +43,9 @@ h3 {
   transition: all 0.3s ease;
 }
 
-.dropdown:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
 .dropdown-header {
-  background-color: #f8f9fa;
+  background-color: #3454D1;
+  color: #FFFFFF;
   padding: 15px 20px;
   cursor: pointer;
   display: flex;
@@ -58,7 +55,7 @@ h3 {
 }
 
 .dropdown-header:hover {
-  background-color: #e9ecef;
+  background-color: #2A43A7;
 }
 
 .dropdown-header h4 {
@@ -67,17 +64,11 @@ h3 {
   font-weight: 500;
 }
 
-.dropdown-header::after {
-  content: '\25BC';
-  font-size: 0.8em;
-  transition: transform 0.3s ease;
-}
-
 .dropdown-content {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.5s ease, padding 0.5s ease;
-  background-color: #ffffff;
+  background-color: #FFFFFF;
 }
 
 .dropdown-content p {
@@ -87,15 +78,6 @@ h3 {
   line-height: 1.6;
   opacity: 0;
   transition: opacity 0.3s ease;
-}
-
-/* Active Dropdown Styles */
-.dropdown-header.active {
-  background-color: #e9ecef;
-}
-
-.dropdown-header.active::after {
-  transform: rotate(180deg);
 }
 
 .dropdown-content.active {
@@ -109,9 +91,9 @@ h3 {
 
 .try-it-out-button {
   padding: 12px 25px;
-  background-color: #7a47d8;
+  background-color: #D1345B;
   border: none;
-  color: #ffffff;
+  color: #FFFFFF;
   cursor: pointer;
   border-radius: 25px;
   text-decoration: none;
@@ -126,16 +108,16 @@ h3 {
 }
 
 .try-it-out-button:hover {
-  background-color: #6a3cb8;
+  background-color: #B12D4E;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .information-button {
   padding: 12px 25px;
-  background-color: #7a47d8;
+  background-color: #189AB4;
   border: none;
-  color: #ffffff;
+  color: #FFFFFF;
   cursor: pointer;
   border-radius: 25px;
   text-decoration: none;
@@ -150,7 +132,7 @@ h3 {
 }
 
 .information-button:hover {
-  background-color: #6a3cb8;
+  background-color: #2CBFAF;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }

@@ -1,43 +1,37 @@
-/* Graph Builder */
 .graph-builder {
     width: 100%;
     height: 100%;
-    border: 1px solid #000000;
-    background-color: #f0f0f0;
+    border: 1px solid #3454D1;
+    background-color: #FFFFFF;
     user-select: none;
 }
 
-/* Graph Builder Circle */
 .graph-builder circle {
     cursor: pointer;
     transition: fill 0.2s ease;
 }
 
 .graph-builder circle:hover {
-    fill: #a0d8ff;
+    fill: #189AB4;
 }
 
-/* Graph Builder Line */
 .graph-builder line {
     stroke-width: 2;
     cursor: pointer;
 }
 
-/* Graph Builder Text */
 .graph-builder text {
     user-select: none;
     pointer-events: none;
 }
 
-/* Graph Builder Polygon */
 .graph-builder polygon {
     pointer-events: none;
 }
 
-/* Graph Builder Temp Edge */
 .graph-builder .temp-edge {
     stroke-dasharray: 5, 5;
-    stroke: red;
+    stroke: #D1345B;
     stroke-width: 2;
     pointer-events: none;
 }

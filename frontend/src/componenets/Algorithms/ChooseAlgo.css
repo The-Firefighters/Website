@@ -1,34 +1,30 @@
-/* Choose Algorithm Container */
 .choose-algo {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-/* Section within Choose Algorithm */
 .choose-algo .section {
     margin-bottom: 15px;
     display: flex;
     flex-direction: column;
 }
 
-/* Select and Number Input Fields */
 .choose-algo select,
 .choose-algo input[type="number"] {
     width: 100%;
     padding: 12px;
     margin-top: 5px;
     border-radius: 6px;
-    border: 1px solid #555555;
+    border: 1px solid #189AB4;
     font-size: 14px;
     box-sizing: border-box;
-    background-color: #333333;
-    color: #ffffff;
+    background-color: #FFFFFF;
+    color: #333333;
 }
 
-/* Error Message */
 .choose-algo .error {
-    color: #ff4d4d;
+    color: #D1345B;
     margin-top: 5px;
     font-size: 12px;
     font-family: 'Poppins', sans-serif;
