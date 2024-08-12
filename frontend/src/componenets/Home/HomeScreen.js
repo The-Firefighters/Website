@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FaChevronDown } from 'react-icons/fa';
 import './HomeScreen.css';
 
 function HomeScreen() {
@@ -14,13 +15,13 @@ function HomeScreen() {
 
   // Convert newline characters to <br /> tags for HTML rendering
   const formatContent = (content) => {
-      return content.split('\n').map((line, index) => (
-        <React.Fragment key={index}>
-          {line}
-          <br />
-        </React.Fragment>
-      ));
-    };
+    return content.split('\n').map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        <br />
+      </React.Fragment>
+    ));
+  };
 
   const dropdowns = [
     {
@@ -66,6 +67,7 @@ function HomeScreen() {
                 onClick={() => toggleDropdown(dropdown.id)}
               >
                 <h4>{dropdown.title}</h4>
+                <FaChevronDown className={`chevron-icon ${activeDropdowns[dropdown.id] ? 'rotated' : ''}`} />
               </div>
               <div className={`dropdown-content ${activeDropdowns[dropdown.id] ? 'active' : ''}`}>
                 <p>{formatContent(dropdown.content)}</p>
