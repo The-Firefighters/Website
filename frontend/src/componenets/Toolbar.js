@@ -1,5 +1,3 @@
-//this should allow us to switch between tabs 
-
 import React from 'react';
 import { Link } from 'react-router-dom'
 import './Toolbar.css'; 
@@ -13,6 +11,7 @@ function Toolbar() {
       <div className="toolbar-buttons">
         <Link to="/home-screen" className="toolbar-button">Home</Link>
         <Link to="/AlgorithmsPage" className="toolbar-button">Algorithms</Link>
+        <Link to="/Information" className="toolbar-button">Information</Link>
         <Link to="/contact" className="toolbar-button">About</Link>
       </div>
     </div>

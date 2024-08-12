@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './HomeScreen.css';
+import './Information.css';
 
-function HomeScreen() {
+function Information() {
   const [activeDropdowns, setActiveDropdowns] = useState({});
 
   const toggleDropdown = (id) => {
@@ -15,8 +14,8 @@ function HomeScreen() {
   const dropdowns = [
     {
       id: 'problem',
-      title: 'The Problem',
-      content: "Explanation about the problem and who created the solutions"
+      title: 'Test',
+      content: "bla bla bla"
     },
     {
       id: 'spreading',
@@ -41,14 +40,14 @@ function HomeScreen() {
   ];
 
   return (
-    <div className="home-screen">
+    <div className="information-page">
       <div className="input-container">
-        <h2>The Firefighter Problem</h2>
+        <h2>Information</h2>
         
         {dropdowns.map((dropdown, index) => (
           <React.Fragment key={dropdown.id}>
-            {index === 1 && <h3>We have two methods for the firefighter problem:</h3>}
-            {index === 3 && <h3>For each method there are two types of algorithms:</h3>}
+            {index === 1 && <h3>test:</h3>}
+            {index === 3 && <h3>test2:</h3>}
             <div className="dropdown">
               <div 
                 className={`dropdown-header ${activeDropdowns[dropdown.id] ? 'active' : ''}`}
@@ -62,16 +61,12 @@ function HomeScreen() {
             </div>
           </React.Fragment>
         ))}
-        
         <Link to="/AlgorithmsPage" className="try-it-out-button">
           Try It Out!
-        </Link>
-         <Link to="/Information" className="information-button">
-          Learn about the algorithms
         </Link>
       </div>
     </div>
   );
 }
 
-export default HomeScreen;
+export default Information;
