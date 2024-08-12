@@ -102,7 +102,6 @@ const LoadGraph = ({ nodes, edges, setNodes, setEdges }) => {
 
   return (
     <div className="load-graph">
-      <h3>Load Graph</h3>
       <div className="section">
         <strong>Or, Choose Predefined Graph:</strong>
         <div className="graph-select-wrapper">
