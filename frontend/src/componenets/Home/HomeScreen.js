@@ -12,11 +12,22 @@ function HomeScreen() {
     }));
   };
 
+  // Convert newline characters to <br /> tags for HTML rendering
+  const formatContent = (content) => {
+      return content.split('\n').map((line, index) => (
+        <React.Fragment key={index}>
+          {line}
+          <br />
+        </React.Fragment>
+      ));
+    };
+
   const dropdowns = [
     {
       id: 'problem',
       title: 'The Problem',
-      content: "Explanation about the problem and who created the solutions"
+      content: "The firefighter problem defines a discrete-time process where a fire starts at a designated subset of the vertices of a graph G. \n \
+      At each subsequent discrete time unit, the fire propagates from each burnt vertex to all of its neighbors unless they are defended by a firefighter that can move between any pair of vertices in a single time unit. Once a vertex is burnt or defended, it remains in that state, and the process terminates when the fire can no longer spread."
     },
     {
       id: 'spreading',
@@ -57,7 +68,7 @@ function HomeScreen() {
                 <h4>{dropdown.title}</h4>
               </div>
               <div className={`dropdown-content ${activeDropdowns[dropdown.id] ? 'active' : ''}`}>
-                <p>{dropdown.content}</p>
+                <p>{formatContent(dropdown.content)}</p>
               </div>
             </div>
           </React.Fragment>
@@ -66,7 +77,7 @@ function HomeScreen() {
         <Link to="/AlgorithmsPage" className="try-it-out-button">
           Try It Out!
         </Link>
-         <Link to="/Information" className="information-button">
+        <Link to="/Information" className="information-button">
           Learn about the algorithms
         </Link>
       </div>

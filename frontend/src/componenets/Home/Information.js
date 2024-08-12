@@ -96,7 +96,7 @@ function Information() {
     {
       id: 'Spreading-Maxsave',
       title: 'Spreading MaxSave',
-      content: "content",
+      content: "TBD",
       latex: SpreadingMaxSavePsudo
     },
     {
@@ -114,13 +114,13 @@ function Information() {
     {
       id: 'NonSpreading-Dirlay-Minbudget',
       title: 'Non-Spreading Dirlay Minbudget',
-      content: ".", 
+      content: "TBD", 
       latex: NonSpreadDirlayMinBudgetPsudo
     },
     {
       id: 'Heuristic-Maxsave',
       title: 'Heuristic Maxsave',
-      content: ".",
+      content: "TBD",
       latex: ""
 
     },
