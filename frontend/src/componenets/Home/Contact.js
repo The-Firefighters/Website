@@ -66,11 +66,6 @@ function Contact() {
                 <p>For more information about our project and to view our code, please visit our GitHub organization:</p>
                 <a href="https://github.com/The-Firefighters" target="_blank" rel="noopener noreferrer">Project GitHub Repository</a>
             </section>
-            
-            <section className="contact-info">
-                <h2>Get in Touch</h2>
-                <p>If you have any questions or would like to discuss our project further, please don't hesitate to reach out to us!.</p>
-            </section>
         </div>
     );
 }

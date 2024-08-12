@@ -88,9 +88,8 @@ section {
     color: #2980b9;
 }
 
-/* Project and Contact Info Links */
-.project-links a,
-.contact-info a {
+/* Project Info Links */
+.project-links a{
     display: inline-block;
     margin-top: 0.5rem;
     padding: 0.5rem 1rem;
@@ -101,8 +100,7 @@ section {
     transition: background-color 0.3s ease;
 }
 
-.project-links a:hover,
-.contact-info a:hover {
+.project-links a:hover{
     background-color: #2980b9;
 }
 

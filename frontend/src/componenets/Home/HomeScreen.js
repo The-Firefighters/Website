@@ -32,12 +32,12 @@ function HomeScreen() {
     {
       id: 'spreading',
       title: 'The Spreading method',
-      content: "The Spreading methode says that the vaccination can spread from the nodes to their neighbors just like infection/fire"
+      content: "The Spreading method says that the vaccination can spread from the nodes to their neighbors just like infection/fire"
     },
     {
       id: 'nonSpreading',
       title: 'The Non-Spreading method',
-      content: "The Spreading methode says that the vaccination cannot spread from the nodes to their neighbors just like infection/fire, meaning that the vaccination is static"
+      content: "The Spreading method says that the vaccination cannot spread from the nodes to their neighbors just like infection/fire, meaning that the vaccination is static"
     },
     {
       id: 'maxSave',
