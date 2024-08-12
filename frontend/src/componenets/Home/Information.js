@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './Information.css';
 
 function Information() {
@@ -61,6 +62,7 @@ function Information() {
             </div>
           </React.Fragment>
         ))}
+
         <Link to="/AlgorithmsPage" className="try-it-out-button">
           Try It Out!
         </Link>
