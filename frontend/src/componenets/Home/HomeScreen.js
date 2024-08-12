@@ -66,6 +66,9 @@ function HomeScreen() {
         <Link to="/AlgorithmsPage" className="try-it-out-button">
           Try It Out!
         </Link>
+         <Link to="/Information" className="information-button">
+          Learn about the algorithms
+        </Link>
       </div>
     </div>
   );
