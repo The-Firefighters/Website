@@ -4,13 +4,10 @@ import { FaChevronDown } from 'react-icons/fa';
 import './HomeScreen.css';
 
 function HomeScreen() {
-  const [activeDropdowns, setActiveDropdowns] = useState({});
+  const [activeDropdown, setActiveDropdown] = useState(null);
 
   const toggleDropdown = (id) => {
-    setActiveDropdowns(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
+    setActiveDropdown(prevActive => prevActive === id ? null : id);
   };
 
   // Convert newline characters to <br /> tags for HTML rendering
@@ -52,7 +49,7 @@ function HomeScreen() {
     }
   ];
 
-  return (
+    return (
     <div className="home-screen">
       <div className="input-container">
         <h2>The Firefighter Problem</h2>
@@ -63,13 +60,13 @@ function HomeScreen() {
             {index === 3 && <h3>For each method there are two types of algorithms:</h3>}
             <div className="dropdown">
               <div 
-                className={`dropdown-header ${activeDropdowns[dropdown.id] ? 'active' : ''}`}
+                className={`dropdown-header ${activeDropdown === dropdown.id ? 'active' : ''}`}
                 onClick={() => toggleDropdown(dropdown.id)}
               >
                 <h4>{dropdown.title}</h4>
-                <FaChevronDown className={`chevron-icon ${activeDropdowns[dropdown.id] ? 'rotated' : ''}`} />
+                <FaChevronDown className={`chevron-icon ${activeDropdown === dropdown.id ? 'rotated' : ''}`} />
               </div>
-              <div className={`dropdown-content ${activeDropdowns[dropdown.id] ? 'active' : ''}`}>
+              <div className={`dropdown-content ${activeDropdown === dropdown.id ? 'active' : ''}`}>
                 <p>{formatContent(dropdown.content)}</p>
               </div>
             </div>

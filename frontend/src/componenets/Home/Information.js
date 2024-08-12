@@ -7,7 +7,11 @@ import './Information.css';
 //TODO : add content to some of the algortimhs that miss it + add the heuristic ones
 
 function Information() {
-  const [activeDropdowns, setActiveDropdowns] = useState({});
+  const [activeDropdown, setActiveDropdown] = useState(null);
+
+  const toggleDropdown = (id) => {
+    setActiveDropdown(prevActive => prevActive === id ? null : id);
+  };
 
   const SpreadingMinBudgetPsudo = `
   $$
@@ -83,15 +87,7 @@ function Information() {
   \\quad \\textbf{4.1.3} \\text{ For any column } j, \\text{ the column sum is exactly } |N_j| \\\\
   \\textbf{Stage 5: Output} \\\\
   \\textbf{5.1} \\text{ Return vaccination strategy based on } M'
-  $$
-  `;
-
-   const toggleDropdown = (id) => {
-    setActiveDropdowns(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
-  };
+  $$`;
 
   const dropdowns = [
     {
@@ -134,7 +130,7 @@ function Information() {
     }
   ];
 
-  return (
+    return (
     <div className="information-page">
       <div className="input-container">
         <h3>About The Algorithms:</h3>
@@ -144,13 +140,13 @@ function Information() {
             {index === 4 && <h3>The Heuristic Algorithms:</h3>}
             <div className="dropdown">
               <div 
-                className={`dropdown-header ${activeDropdowns[dropdown.id] ? 'active' : ''}`}
+                className={`dropdown-header ${activeDropdown === dropdown.id ? 'active' : ''}`}
                 onClick={() => toggleDropdown(dropdown.id)}
               >
                 <h4>{dropdown.title}</h4>
-                <FaChevronDown className={`chevron-icon ${activeDropdowns[dropdown.id] ? 'rotated' : ''}`} />
+                <FaChevronDown className={`chevron-icon ${activeDropdown === dropdown.id ? 'rotated' : ''}`} />
               </div>
-              <div className={`dropdown-content ${activeDropdowns[dropdown.id] ? 'active' : ''}`}>
+              <div className={`dropdown-content ${activeDropdown === dropdown.id ? 'active' : ''}`}>
                 <p>{dropdown.content}</p>
                 <MathJax.Context input="tex">
                   <MathJax.Text text={dropdown.latex} />
