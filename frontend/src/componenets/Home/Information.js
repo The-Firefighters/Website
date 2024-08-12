@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import MathJax from 'react-mathjax2';
+import { FaChevronDown } from 'react-icons/fa';
 import './Information.css';
 
 //TODO : add content to some of the algortimhs that miss it + add the heuristic ones
@@ -85,7 +86,7 @@ function Information() {
   $$
   `;
 
-  const toggleDropdown = (id) => {
+   const toggleDropdown = (id) => {
     setActiveDropdowns(prev => ({
       ...prev,
       [id]: !prev[id]
@@ -147,6 +148,7 @@ function Information() {
                 onClick={() => toggleDropdown(dropdown.id)}
               >
                 <h4>{dropdown.title}</h4>
+                <FaChevronDown className={`chevron-icon ${activeDropdowns[dropdown.id] ? 'rotated' : ''}`} />
               </div>
               <div className={`dropdown-content ${activeDropdowns[dropdown.id] ? 'active' : ''}`}>
                 <p>{dropdown.content}</p>
