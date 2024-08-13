@@ -146,7 +146,7 @@ function Information() {
                 <h4>{dropdown.title}</h4>
                 <FaChevronDown className={`chevron-icon ${activeDropdown === dropdown.id ? 'rotated' : ''}`} />
               </div>
-              <div className={`dropdown-content ${activeDropdown === dropdown.id ? 'active' : ''}`}>
+              <div className={`dropdown-content-info ${activeDropdown === dropdown.id ? 'active' : ''}`}>
                 <p>{dropdown.content}</p>
                 <MathJax.Context input="tex">
                   <MathJax.Text text={dropdown.latex} />

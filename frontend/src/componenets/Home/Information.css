@@ -55,14 +55,14 @@ h3 {
     color: #FFFFFF;
 }
 
-.dropdown-content {
+.dropdown-content-info {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.5s ease, padding 0.5s ease;
     background-color: #FFFFFF;
 }
 
-.dropdown-content p {
+.dropdown-content-info p {
     padding: 0 20px;
     margin: 0;
     font-size: 16px;
@@ -70,7 +70,7 @@ h3 {
     color: #333333;
 }
 
-.dropdown-content.active {
+.dropdown-content-info.active {
     max-height: none;
     padding: 15px 0;
 }
