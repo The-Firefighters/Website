@@ -5,9 +5,7 @@
 
 
 def run_algorithm(graph, selected_algorithm, source, target, budget):
-    # Convert the graph data to the format expected by your algorithms
-    # This might involve creating a networkx graph from the nodes and edges
-    # For example:
+
     import networkx as nx
     G = nx.DiGraph()
     G.add_nodes_from(graph['nodes'])

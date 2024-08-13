@@ -186,16 +186,7 @@ const ChooseAlgo = ({ nodes,edges, setNodes, isAlgorithmRunning, setIsAlgorithmR
           Run Algorithm
         </button>
       )}
-  
-      {/* You can add a section here to display the results once they're available */}
-      {/* For example:
-      {algorithmResults && (
-        <div className="results-section">
-          <h3>Results:</h3>
-          <pre>{JSON.stringify(algorithmResults, null, 2)}</pre>
-        </div>
-      )}
-      */}
+      
     </div>
   );
 };
