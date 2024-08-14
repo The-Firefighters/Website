@@ -173,20 +173,7 @@ const ChooseAlgo = ({ nodes,edges, setNodes, isAlgorithmRunning, setIsAlgorithmR
           />
           {errors.budget && <div className="error">{errors.budget}</div>}
         </div>
-      )}
-  
-      {isAlgorithmRunning ? (
-        <div className="running-message">Algorithm is running...</div>
-      ) : (
-        <button 
-          className="run-algorithm"
-          onClick={() => setShouldRunAlgorithm(true)}
-          disabled={isAlgorithmRunning || !selectedAlgorithm || sourceNode === "" || targetNodes.length === 0}
-        >
-          Run Algorithm
-        </button>
-      )}
-      
+      )}   
     </div>
   );
 };
