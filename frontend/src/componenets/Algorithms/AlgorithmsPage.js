@@ -84,12 +84,13 @@ const AlgorithmPage = () => {
           {isGraphSaved && (
             <ChooseAlgo
               nodes={nodes}
+              edges={edges}
               setNodes={setNodes}
               isAlgorithmRunning={isAlgorithmRunning}
               setIsAlgorithmRunning={setIsAlgorithmRunning}
               shouldRunAlgorithm={shouldRunAlgorithm}
               setShouldRunAlgorithm={setShouldRunAlgorithm}
-            />
+          />
           )}
           <button
             className={`run-algorithm ${isAlgorithmRunning ? 'disabled' : ''}`}

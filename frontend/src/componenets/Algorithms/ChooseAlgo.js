@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './ChooseAlgo.css';
+import axios from 'axios';
 
-const ChooseAlgo = ({ nodes, setNodes, isAlgorithmRunning, setIsAlgorithmRunning, shouldRunAlgorithm, setShouldRunAlgorithm }) => {
+
+const ChooseAlgo = ({ nodes,edges, setNodes, isAlgorithmRunning, setIsAlgorithmRunning, shouldRunAlgorithm, setShouldRunAlgorithm }) => {
   const [selectedAlgorithm, setSelectedAlgorithm] = useState('');
   const [sourceNode, setSourceNode] = useState('');
   const [targetNodes, setTargetNodes] = useState([]);
@@ -36,20 +38,46 @@ const ChooseAlgo = ({ nodes, setNodes, isAlgorithmRunning, setIsAlgorithmRunning
     return Object.keys(newErrors).length === 0;
   }, [selectedAlgorithm, sourceNode, budget]);
 
+  //post request to the server with the data
   useEffect(() => {
     if (shouldRunAlgorithm) {
       const isValid = validateInputs();
       if (isValid) {
         setIsAlgorithmRunning(true);
-        // Run the algorithm here
-        console.log("Running algorithm with:", { selectedAlgorithm, sourceNode, targetNodes, budget });
+  
+        // Prepare the graph data
+        const graphData = {
+          nodes: nodes.map(({ id, x, y }) => ({ id, x, y })),
+          edges: edges.map(({ source, target }) => ({ source, target }))
+        };
+  
+        // Send data to the server
+        axios.post('http://localhost:5000/run-algorithm', {
+          graph: graphData,
+          selectedAlgorithm,
+          sourceNode,
+          targetNodes,
+          budget
+        })
+        .then(response => {
+          console.log('Server response:', response.data);
+          // Handle the response from the server here
+          // For example, you might want to update your UI with the result
+        })
+        .catch(error => {
+          console.error('Error running algorithm:', error);
+          // Handle the error here, possibly show a message to the user
+        })
+        .finally(() => {
+          setIsAlgorithmRunning(false);
+        });
       }
-      // Delay setting shouldRunAlgorithm to false to allow error messages to display
       setTimeout(() => {
         setShouldRunAlgorithm(false);
-      }, 100); // Adjust delay as needed
+      }, 100);
     }
-  }, [shouldRunAlgorithm, validateInputs, setIsAlgorithmRunning, selectedAlgorithm, sourceNode, targetNodes, budget, setShouldRunAlgorithm]);
+  }, [shouldRunAlgorithm, validateInputs, setIsAlgorithmRunning, selectedAlgorithm, sourceNode, targetNodes, budget, setShouldRunAlgorithm, nodes, edges]);
+  
 
   const handleSourceNodeChange = (nodeId) => {
     if (nodeId === "") return;
@@ -95,6 +123,7 @@ const ChooseAlgo = ({ nodes, setNodes, isAlgorithmRunning, setIsAlgorithmRunning
         </select>
         {errors.algorithm && <div className="error">{errors.algorithm}</div>}
       </div>
+  
       <div className="section">
         <strong>Source Node:</strong>
         <select 
@@ -111,6 +140,7 @@ const ChooseAlgo = ({ nodes, setNodes, isAlgorithmRunning, setIsAlgorithmRunning
         </select>
         {errors.sourceNode && <div className="error">{errors.sourceNode}</div>}
       </div>
+  
       <div className="section">
         <strong>Target Nodes:</strong>
         <select 
@@ -128,6 +158,7 @@ const ChooseAlgo = ({ nodes, setNodes, isAlgorithmRunning, setIsAlgorithmRunning
             ))}
         </select>
       </div>
+  
       {selectedAlgorithm.toLowerCase().includes('maxsave') && (
         <div className="section">
           <strong>Add a Budget</strong>
@@ -143,6 +174,19 @@ const ChooseAlgo = ({ nodes, setNodes, isAlgorithmRunning, setIsAlgorithmRunning
           {errors.budget && <div className="error">{errors.budget}</div>}
         </div>
       )}
+  
+      {isAlgorithmRunning ? (
+        <div className="running-message">Algorithm is running...</div>
+      ) : (
+        <button 
+          className="run-algorithm"
+          onClick={() => setShouldRunAlgorithm(true)}
+          disabled={isAlgorithmRunning || !selectedAlgorithm || sourceNode === "" || targetNodes.length === 0}
+        >
+          Run Algorithm
+        </button>
+      )}
+      
     </div>
   );
 };
