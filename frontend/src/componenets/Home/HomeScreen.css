@@ -88,6 +88,8 @@ h4 {
   text-decoration: none;
   display: inline-block;
   margin-top: 30px;
+  margin-right: 5px;
+  margin-left: 5px;
   font-family: 'Poppins', sans-serif;
   font-size: 18px;
   font-weight: 500;
