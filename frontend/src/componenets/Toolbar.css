@@ -13,11 +13,11 @@
 .toolbar-title {
   color: #FFFFFF;
   text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
 }
 
 .toolbar-title h1 {
@@ -31,7 +31,7 @@
   display: flex;
   gap: 12px;
 }
-/*34D1BF*/
+
 .toolbar-button {
   background-color: #189AB4;
   border: none;
@@ -62,25 +62,43 @@
   transform: translateY(1px);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .toolbar {
-    flex-direction: column;
-    padding: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .toolbar-title {
     position: static;
     transform: none;
+    width: 100%;
     margin-bottom: 15px;
+    order: -1;
   }
 
   .toolbar-buttons {
-    width: 100%;
     justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .toolbar {
+    padding: 15px;
   }
 
   .toolbar-button {
     padding: 10px 15px;
     font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .toolbar-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .toolbar-button {
+    width: 100%;
   }
 }
