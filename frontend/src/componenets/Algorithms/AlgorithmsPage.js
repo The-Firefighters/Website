@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import GraphBuilder from './GraphBuilder';
 import ChooseAlgo from './ChooseAlgo';
 import LoadGraph from './LoadGraph';
+import RunningInfo from './RunningInfo';
 import './AlgorithmsPage.css';
 
 const AlgorithmPage = () => {
@@ -27,6 +28,7 @@ const AlgorithmPage = () => {
     }
   };
 
+
   const handleGraphDownload = () => {
     const graphData = {
       nodes: nodes.map(({ id, label, x, y }) => ({ id, label, x, y })),
@@ -45,7 +47,7 @@ const AlgorithmPage = () => {
     document.body.removeChild(link);
   };
 
-  return (
+    return (
     <div className="algorithm-page">
       <div className="content-wrapper">
         <div className="graph-box">
@@ -81,7 +83,7 @@ const AlgorithmPage = () => {
               </div>
             </>
           )}
-          {isGraphSaved && (
+                    {isGraphSaved && !isAlgorithmRunning && (
             <ChooseAlgo
               nodes={nodes}
               edges={edges}
@@ -90,17 +92,18 @@ const AlgorithmPage = () => {
               setIsAlgorithmRunning={setIsAlgorithmRunning}
               shouldRunAlgorithm={shouldRunAlgorithm}
               setShouldRunAlgorithm={setShouldRunAlgorithm}
-          />
+            />
           )}
-          <button
-            className={`run-algorithm ${isAlgorithmRunning ? 'disabled' : ''}`}
-            onClick={handleButtonClick}
-            disabled={isAlgorithmRunning || shouldRunAlgorithm}
-          >
-            {isGraphSaved
-              ? (isAlgorithmRunning ? "Algorithm Running..." : "Run the Algorithm!")
-                          : "Save Graph"}
-          </button>
+          {isAlgorithmRunning && <RunningInfo />}
+          {!isAlgorithmRunning && (
+            <button
+              className={`run-algorithm`}
+              onClick={handleButtonClick}
+              disabled={isAlgorithmRunning}
+            >
+              {isGraphSaved ? "Run the Algorithm!" : "Save Graph"}
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -108,4 +111,3 @@ const AlgorithmPage = () => {
 };
 
 export default AlgorithmPage;
-
