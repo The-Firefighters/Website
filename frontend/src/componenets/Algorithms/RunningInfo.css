@@ -1,0 +1,61 @@
+.running-info {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.info-content {
+    margin-bottom: 8px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.control-button {
+    flex: 1;
+    padding: 6px;
+    font-size: 12px;
+    color: #FFFFFF;
+    background-color: #3454D1;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+.control-button:hover {
+    background-color: #2A43A7;
+}
+
+.log-box {
+    flex-grow: 1;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 8px;
+    overflow-y: auto;
+    background-color: #f5f5f5;
+}
+
+.log-box h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #3454D1;
+    font-size: 14px;
+}
+
+.log-content {
+    font-family: monospace;
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.log-content p {
+    margin: 0;
+    padding: 1px 0;
+}

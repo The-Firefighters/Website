@@ -4,17 +4,7 @@
 import networkx as nx
 
 def create_nx_graph(data):
-    """
-    Creates a networkx graph from the provided data.
-
-    Parameters:
-    data (dict): A dictionary containing nodes and edges information.
-
-    Returns:
-    G (networkx.Graph): The created graph.
-    """
-    # Create an empty graph
-    G = nx.Graph()
+    G = nx.DiGraph()
 
     # Add nodes to the graph
     for node in data['nodes']:
@@ -27,20 +17,33 @@ def create_nx_graph(data):
     return G
 
 def run_algorithm(graph, selected_algorithm, source, target, budget):
-    print(graph)
     G = create_nx_graph(graph)
-
-    if selected_algorithm == "Non-Spreading MinBudget":
-        print(selected_algorithm)
-        print(source)
-        print(target)
-        print(G.nodes)
-        print(G.edges)
-        # return non_spreading_minbudget(G, source, target)
-    # Add more algorithm conditions here
-    else:
-        raise ValueError("Unknown algorithm selected")
-
+    
+    match selected_algorithm:
+        case "Spreading MaxSave":
+            # run 
+            print(selected_algorithm)
+        case "Spreading MinBudget":
+            # run
+            print(selected_algorithm)
+        case "Non-Spreading Dirlay MinBudget":
+            # run 
+            print(selected_algorithm)
+        case "Non-Spreading MinBudget":
+            # run 
+            print(selected_algorithm)
+        case "Heuristic Spreading Maxsave":
+            # run 
+            print(selected_algorithm)
+        case "Heuristic Spreading MinBudget":
+            # run 
+            print(selected_algorithm)
+        case "Heuristic Non-Spreading MinBudget":
+            # run 
+            print(selected_algorithm)
+        case _:
+            raise ValueError("Unknown algorithm selected")
+        
 # def non_spreading_minbudget(graph, source, target):
 #     ans = Firefighter_Problem.non_spreading_minbudget(graph, source, target)
 #     print(ans)
