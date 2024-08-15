@@ -1,6 +1,3 @@
-# this file simply calls the algorithms from the networkZ library.
-# it processes the data given from the server side and then sends the results to the app.js side using the server
-# import networkz.
 import networkx as nx
 from Firefighter_Problem import *
 
@@ -19,39 +16,39 @@ def create_nx_graph(data):
 
 def run_algorithm(graph, selected_algorithm, source, target, budget):
     G = create_nx_graph(graph)
-    ans = ""
+    ans = None
     
     match selected_algorithm:
         case "Spreading MaxSave":
             print(selected_algorithm)
             ans = spreading_maxsave(Graph=graph,budget=budget,source=source,targets=target)
-            return ans, G
+            return ans
         case "Spreading MinBudget":
             print(selected_algorithm)
+            ans = spreading_minbudget(Graph=graph,source=source,targets=target)
+            return ans
         case "Non-Spreading Dirlay MinBudget":
-            # run 
             print(selected_algorithm)
+            ans = non_spreading_dirlaynet_minbudget(Graph=graph,source=source,targets=target)
+            return ans
         case "Non-Spreading MinBudget":
-            # run 
             print(selected_algorithm)
-        case "Heuristic Spreading Maxsave":
-            # run 
+            ans = non_spreading_minbudget(Graph=graph,source=source,targets=target)
+            return ans
+        case "Heuristic Spreading Maxsave": 
             print(selected_algorithm)
+            ans = heuristic_maxsave(Graph=graph,budget=budget,source=source,targets=target,spreading=True)
+            return ans
         case "Heuristic Spreading MinBudget":
-            # run 
             print(selected_algorithm)
+            ans = heuristic_minbudget(Graph=graph,source=source,targets=target,spreading=True)
+            return ans
         case "Heuristic Non-Spreading MinBudget":
-            # run 
             print(selected_algorithm)
+            ans = heuristic_minbudget(Graph=graph,source=source,targets=target,spreading=False)
+            return ans
         case _:
             raise ValueError("Unknown algorithm selected")
-        
-# def non_spreading_minbudget(graph, source, target):
-#     ans = Firefighter_Problem.non_spreading_minbudget(graph, source, target)
-#     print(ans)
-#     return ans
-
-# Add more algorithm functions as needed
 
 if __name__ == "__main__":
     pass
