@@ -69,7 +69,7 @@ const ChooseAlgo = ({ nodes,edges, setNodes, isAlgorithmRunning, setIsAlgorithmR
           // Handle the error here, possibly show a message to the user
         })
         .finally(() => {
-          setIsAlgorithmRunning(false);
+          setIsAlgorithmRunning(true);
         });
       }
       setTimeout(() => {

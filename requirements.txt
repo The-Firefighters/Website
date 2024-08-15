@@ -1,1 +1,1 @@
-networkz == @ githttps://github.com/The-Firefighters/networkz
+git+https://github.com/ariel-research/networkz

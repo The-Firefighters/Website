@@ -2,6 +2,7 @@
 # it processes the data given from the server side and then sends the results to the app.js side using the server
 # import networkz.
 import networkx as nx
+from Firefighter_Problem import *
 
 def create_nx_graph(data):
     G = nx.DiGraph()
@@ -18,13 +19,14 @@ def create_nx_graph(data):
 
 def run_algorithm(graph, selected_algorithm, source, target, budget):
     G = create_nx_graph(graph)
+    ans = ""
     
     match selected_algorithm:
         case "Spreading MaxSave":
-            # run 
             print(selected_algorithm)
+            ans = spreading_maxsave(Graph=graph,budget=budget,source=source,targets=target)
+            return ans, G
         case "Spreading MinBudget":
-            # run
             print(selected_algorithm)
         case "Non-Spreading Dirlay MinBudget":
             # run 
