@@ -11,6 +11,8 @@ const AlgorithmPage = () => {
   const [isGraphSaved, setIsGraphSaved] = useState(false);
   const [isAlgorithmRunning, setIsAlgorithmRunning] = useState(false);
   const [shouldRunAlgorithm, setShouldRunAlgorithm] = useState(false);
+  const [algorithmResult, setAlgorithmResult] = useState(null);
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState('');
 
   const memoizedSetNodes = useCallback((newNodes) => {
     setNodes(newNodes);
@@ -27,7 +29,6 @@ const AlgorithmPage = () => {
       setShouldRunAlgorithm(true);
     }
   };
-
 
   const handleGraphDownload = () => {
     const graphData = {
@@ -47,7 +48,7 @@ const AlgorithmPage = () => {
     document.body.removeChild(link);
   };
 
-    return (
+  return (
     <div className="algorithm-page">
       <div className="content-wrapper">
         <div className="graph-box">
@@ -83,7 +84,7 @@ const AlgorithmPage = () => {
               </div>
             </>
           )}
-                    {isGraphSaved && !isAlgorithmRunning && (
+          {isGraphSaved && !isAlgorithmRunning && (
             <ChooseAlgo
               nodes={nodes}
               edges={edges}
@@ -92,9 +93,16 @@ const AlgorithmPage = () => {
               setIsAlgorithmRunning={setIsAlgorithmRunning}
               shouldRunAlgorithm={shouldRunAlgorithm}
               setShouldRunAlgorithm={setShouldRunAlgorithm}
+              setAlgorithmResult={setAlgorithmResult}
+              setSelectedAlgorithm={setSelectedAlgorithm}
             />
           )}
-          {isAlgorithmRunning && <RunningInfo />}
+          {isAlgorithmRunning && (
+            <RunningInfo 
+              algorithmResult={algorithmResult} 
+              selectedAlgorithm={selectedAlgorithm}
+            />
+          )}
           {!isAlgorithmRunning && (
             <button
               className={`run-algorithm`}

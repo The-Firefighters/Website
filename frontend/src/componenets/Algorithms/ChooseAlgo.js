@@ -2,9 +2,18 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './ChooseAlgo.css';
 import axios from 'axios';
 
-
-const ChooseAlgo = ({ nodes,edges, setNodes, isAlgorithmRunning, setIsAlgorithmRunning, shouldRunAlgorithm, setShouldRunAlgorithm }) => {
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState('');
+const ChooseAlgo = ({ 
+  nodes, 
+  edges, 
+  setNodes, 
+  isAlgorithmRunning, 
+  setIsAlgorithmRunning, 
+  shouldRunAlgorithm, 
+  setShouldRunAlgorithm, 
+  setAlgorithmResult,
+  setSelectedAlgorithm 
+}) => {
+  const [localSelectedAlgorithm, setLocalSelectedAlgorithm] = useState('');
   const [sourceNode, setSourceNode] = useState('');
   const [targetNodes, setTargetNodes] = useState([]);
   const [budget, setBudget] = useState('');
@@ -25,9 +34,9 @@ const ChooseAlgo = ({ nodes,edges, setNodes, isAlgorithmRunning, setIsAlgorithmR
 
   const validateInputs = useCallback(() => {
     const newErrors = {};
-    if (!selectedAlgorithm) newErrors.algorithm = 'Please select an algorithm';
+    if (!localSelectedAlgorithm) newErrors.algorithm = 'Please select an algorithm';
     if (sourceNode === '') newErrors.sourceNode = 'Please select a source node';
-    if (selectedAlgorithm.toLowerCase().includes('maxsave')) {
+    if (localSelectedAlgorithm.toLowerCase().includes('maxsave')) {
       if (!budget) {
         newErrors.budget = 'Please enter a budget';
       } else if (!Number.isInteger(Number(budget)) || Number(budget) <= 0) {
@@ -36,37 +45,34 @@ const ChooseAlgo = ({ nodes,edges, setNodes, isAlgorithmRunning, setIsAlgorithmR
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [selectedAlgorithm, sourceNode, budget]);
+  }, [localSelectedAlgorithm, sourceNode, budget]);
 
-  //post request to the server with the data
   useEffect(() => {
     if (shouldRunAlgorithm) {
       const isValid = validateInputs();
       if (isValid) {
         setIsAlgorithmRunning(true);
   
-        // Prepare the graph data
         const graphData = {
           nodes: nodes.map(({ id, x, y }) => ({ id, x, y })),
           edges: edges.map(({ source, target }) => ({ source, target }))
         };
   
-        // Send data to the server
         axios.post('http://localhost:5000/run-algorithm', {
           graph: graphData,
-          selectedAlgorithm,
+          selectedAlgorithm: localSelectedAlgorithm,
           sourceNode,
           targetNodes,
           budget
         })
         .then(response => {
           console.log('Server response:', response.data);
-          // Handle the response from the server here
-          // For example, you might want to update your UI with the result
+          setAlgorithmResult(response.data);
+          setSelectedAlgorithm(localSelectedAlgorithm);
         })
         .catch(error => {
           console.error('Error running algorithm:', error);
-          // Handle the error here, possibly show a message to the user
+          setAlgorithmResult({ error: 'An error occurred while running the algorithm' });
         })
         .finally(() => {
           setIsAlgorithmRunning(true);
@@ -76,8 +82,7 @@ const ChooseAlgo = ({ nodes,edges, setNodes, isAlgorithmRunning, setIsAlgorithmR
         setShouldRunAlgorithm(false);
       }, 100);
     }
-  }, [shouldRunAlgorithm, validateInputs, setIsAlgorithmRunning, selectedAlgorithm, sourceNode, targetNodes, budget, setShouldRunAlgorithm, nodes, edges]);
-  
+  }, [shouldRunAlgorithm, validateInputs, setIsAlgorithmRunning, localSelectedAlgorithm, sourceNode, targetNodes, budget, setShouldRunAlgorithm, nodes, edges, setAlgorithmResult, setSelectedAlgorithm]);
 
   const handleSourceNodeChange = (nodeId) => {
     if (nodeId === "") return;
@@ -111,8 +116,8 @@ const ChooseAlgo = ({ nodes,edges, setNodes, isAlgorithmRunning, setIsAlgorithmR
       <div className="section">
         <h3>Choose Algorithm:</h3>
         <select 
-          value={selectedAlgorithm} 
-          onChange={(e) => setSelectedAlgorithm(e.target.value)}
+          value={localSelectedAlgorithm} 
+          onChange={(e) => setLocalSelectedAlgorithm(e.target.value)}
           aria-label="Choose Algorithm"
           disabled={isAlgorithmRunning}
         >
@@ -159,7 +164,7 @@ const ChooseAlgo = ({ nodes,edges, setNodes, isAlgorithmRunning, setIsAlgorithmR
         </select>
       </div>
   
-      {selectedAlgorithm.toLowerCase().includes('maxsave') && (
+      {localSelectedAlgorithm.toLowerCase().includes('maxsave') && (
         <div className="section">
           <strong>Add a Budget</strong>
           <input 
