@@ -22,8 +22,9 @@ import networkx as nx
 import networkx.algorithms.connectivity as algo 
 import math
 import logging
-from networkz.algorithms.max_flow_with_node_capacity import min_cut_with_node_capacity
-from Utils import *
+from . import max_flow_with_node_capacity
+from . import Utils
+
 def setup_logger(logger):
     logger.setLevel(logging.INFO)
     
@@ -99,38 +100,38 @@ def spreading_maxsave(Graph:nx.DiGraph, budget:int, source:int, targets:list, st
         logger.critical("Error: The budget must be at least 1")
         raise ValueError("Error: The budget must be at least 1")
         
-    validate_parameters(Graph, source, targets)
+    Utils.validate_parameters(Graph, source, targets)
     logger.info(f"Starting the spreading_maxsave function with source node {source}, budget {budget}, and targets: {targets}")
     
-    clean_graph(Graph)
+    Utils.clean_graph(Graph)
     local_targets = targets.copy()
     infected_nodes = []
     vaccinated_nodes = []
     vaccination_strategy = []
     saved_target_nodes = set()
     can_spread = True
-    Graph.nodes[source]['status'] = Status.INFECTED.value
+    Graph.nodes[source]['status'] = Utils.Status.INFECTED.value
     infected_nodes.append(source)
     
     logger.info("Calculating all possible direct vaccinations in each timestamp")
-    gamma, direct_vaccinations = calculate_gamma(Graph, source, targets)
+    gamma, direct_vaccinations = Utils.calculate_gamma(Graph, source, targets)
     
     logger.info("Calculating direct vaccinations grouping by timestamp")
-    epsilon = calculate_epsilon(direct_vaccinations)
+    epsilon = Utils.calculate_epsilon(direct_vaccinations)
     
     time_step = 0
     while can_spread and time_step < len(epsilon):
-        spread_vaccination(Graph, vaccinated_nodes)
+        Utils.spread_vaccination(Graph, vaccinated_nodes)
         for i in range(budget):
             logger.info(f"Calculating the best direct vaccination strategy for the current time step that saves more new nodes in targets (Current budget: {i+1} out of {budget})")
-            vaccination, nodes_saved = find_best_direct_vaccination(Graph, direct_vaccinations, epsilon[time_step], local_targets)
+            vaccination, nodes_saved = Utils.find_best_direct_vaccination(Graph, direct_vaccinations, epsilon[time_step], local_targets)
             
             if vaccination != ():
                 logger.info(f"Found {vaccination} as a solution for current timestamp. Appending to vaccination strategy and vaccinating the node")
                 vaccination_strategy.append(vaccination)
                 
                 chosen_node = vaccination[0]
-                vaccinate_node(Graph, chosen_node)
+                Utils.vaccinate_node(Graph, chosen_node)
                 
                 vaccinated_nodes.append(chosen_node)
                 logger.info(f"Updated list of currently vaccinated nodes: {vaccinated_nodes}")
@@ -144,7 +145,7 @@ def spreading_maxsave(Graph:nx.DiGraph, budget:int, source:int, targets:list, st
                 logger.info(f"All nodes are either vaccinated or infected")
                 break
 
-        can_spread = spread_virus(Graph, infected_nodes)
+        can_spread = Utils.spread_virus(Graph, infected_nodes)
 
         if stop_condition is not None:
             if len(local_targets) == 0 or any(node in infected_nodes for node in local_targets):
@@ -209,7 +210,7 @@ def spreading_minbudget(Graph:nx.DiGraph, source:int, targets:list) -> tuple[int
     (3, [(5, 1), (2, 1), (4, 1)])
     """
 
-    validate_parameters(Graph, source, targets)
+    Utils.validate_parameters(Graph, source, targets)
     logger.info(f"Starting the spreading_minbudget function with source node {source} and targets: {targets}")
 
     min_value = 1
@@ -289,10 +290,10 @@ def non_spreading_minbudget(Graph:nx.DiGraph, source:int, targets:list) -> int:
     >>> non_spreading_minbudget(G3,0,[2,6,1,8])
     (3, [(2, 1), (4, 1), (5, 1)])
     """
-    validate_parameters(Graph, source, targets)
+    Utils.validate_parameters(Graph, source, targets)
     logger.info(f"Starting the non_spreading_minbudget function with source node {source} and targets: {targets}")
 
-    G = create_st_graph(Graph, targets, 't')
+    G = Utils.create_st_graph(Graph, targets, 't')
     min_cut = algo.minimum_st_node_cut(G, source, 't')
     logger.info(f"Minimum s-t node cut: {min_cut}")
     min_budget = len(min_cut)
@@ -332,23 +333,23 @@ def non_spreading_dirlaynet_minbudget(Graph:nx.DiGraph, source:int, targets:list
     (2, [(1, 1), (2, 1)])
     """
 
-    validate_parameters(Graph, source, targets)
-    if not is_dag(Graph):
+    Utils.validate_parameters(Graph, source, targets)
+    if not Utils.is_dag(Graph):
        logger.error("The graph is not a DAG graph, thus cannot run the algorithm")
        return
     
     #display_graph(Graph)
     logger.info(f"Starting the non_spreading_dirlaynet_minbudget function with source node {source} and targets: {targets}")
 
-    layers = adjust_nodes_capacity(Graph, source)
-    G = create_st_graph(Graph, targets, 't')
+    layers = Utils.adjust_nodes_capacity(Graph, source)
+    G = Utils.create_st_graph(Graph, targets, 't')
     #display_graph(G)
-    G_reduction_min_cut = min_cut_with_node_capacity(G, source=source, target='t')
-    N_groups = min_cut_N_groups(G_reduction_min_cut,layers)
-    vacc_matrix = calculate_vaccine_matrix(layers, N_groups)
-    integer_matrix = matrix_to_integers_values(vacc_matrix)
-    min_budget = min_budget_calculation(vacc_matrix)
-    strategy = dirlay_vaccination_strategy(integer_matrix, N_groups)
+    G_reduction_min_cut = max_flow_with_node_capacity.min_cut_with_node_capacity(G, source=source, target='t')
+    N_groups = Utils.min_cut_N_groups(G_reduction_min_cut,layers)
+    vacc_matrix = Utils.calculate_vaccine_matrix(layers, N_groups)
+    integer_matrix = Utils.matrix_to_integers_values(vacc_matrix)
+    min_budget = Utils.min_budget_calculation(vacc_matrix)
+    strategy = Utils.dirlay_vaccination_strategy(integer_matrix, N_groups)
 
     logger.info(f"Returning minimum budget: {min_budget} and the vaccination strategy: {strategy}")
     return min_budget, strategy
@@ -394,10 +395,10 @@ def heuristic_maxsave(Graph:nx.DiGraph, budget:int, source:int, targets:list, sp
         logger.critical("Error: The budget must be at least 1")
         raise ValueError("Error: The budget must be at least 1")
 
-    validate_parameters(Graph, source, targets)
+    Utils.validate_parameters(Graph, source, targets)
     logger.info(f"Starting the heuristic_maxsave function with source node {source}, budget {budget}, targets: {targets}, and spreading: {spreading}")
 
-    clean_graph(Graph)
+    Utils.clean_graph(Graph)
     #display_graph(Graph)
     local_targets = targets.copy()
     infected_nodes = []
@@ -405,21 +406,21 @@ def heuristic_maxsave(Graph:nx.DiGraph, budget:int, source:int, targets:list, sp
     vaccination_strategy = []
     saved_target_nodes = set()
     can_spread = True
-    Graph.nodes[source]['status'] = Status.INFECTED.value
+    Graph.nodes[source]['status'] = Utils.Status.INFECTED.value
     infected_nodes.append(source)
     #display_graph(Graph)
     time_step = 1
 
     while can_spread:
         if spreading:
-            spread_vaccination(Graph, vaccinated_nodes)
+            Utils.spread_vaccination(Graph, vaccinated_nodes)
         for i in range(budget):
             logger.info(f"Calculating the best direct vaccination strategy for the current time step that saves more new node in targets (Current budget: {budget})")
-            node_to_vaccinate, nodes_saved = find_best_neighbor(Graph, infected_nodes, local_targets, targets)
+            node_to_vaccinate, nodes_saved = Utils.find_best_neighbor(Graph, infected_nodes, local_targets, targets)
             if node_to_vaccinate is not None:
                 logger.info(f"Found {node_to_vaccinate} as a solution for current timestamp, appending to vaccination strategy and vaccinating the node")
                 vaccination_strategy.append((node_to_vaccinate, time_step))
-                vaccinate_node(Graph, node_to_vaccinate)
+                Utils.vaccinate_node(Graph, node_to_vaccinate)
                 vaccinated_nodes.append(node_to_vaccinate)
                 logger.info(f"Updated list of currently vaccinated nodes: {vaccinated_nodes}")
 
@@ -431,13 +432,13 @@ def heuristic_maxsave(Graph:nx.DiGraph, budget:int, source:int, targets:list, sp
                 logger.info(f"All nodes are either vaccinated or infected")
                 break
         
-        can_spread = spread_virus(Graph, infected_nodes)
+        can_spread = Utils.spread_virus(Graph, infected_nodes)
 
         if stop_condition is not None:
             if len(local_targets) == 0 or any(node in infected_nodes for node in local_targets):
                 for node in targets:
                     node_status = Graph.nodes[node]['status']
-                    if node_status != Status.INFECTED.value:
+                    if node_status != Utils.Status.INFECTED.value:
                         saved_target_nodes.add(node)
                 logger.info(f"Returning vaccination strategy: {vaccination_strategy}. The strategy saved the nodes: {saved_target_nodes}")
                 return vaccination_strategy, saved_target_nodes
@@ -446,7 +447,7 @@ def heuristic_maxsave(Graph:nx.DiGraph, budget:int, source:int, targets:list, sp
     
     for node in targets:
         node_status = Graph.nodes[node]['status']
-        if node_status != Status.INFECTED.value:
+        if node_status != Utils.Status.INFECTED.value:
             saved_target_nodes.add(node)
 
     logger.info(f"Returning vaccination strategy: {vaccination_strategy}. The strategy saves the nodes: {saved_target_nodes}")
@@ -484,7 +485,7 @@ def heuristic_minbudget(Graph:nx.DiGraph, source:int, targets:list, spreading:bo
     (2, [(1, 1), (2, 1)])
     """
     
-    validate_parameters(Graph, source, targets)
+    Utils.validate_parameters(Graph, source, targets)
     logger.info(f"Starting the heuristic_minbudget function with source node {source}, targets: {targets}, and spreading: {spreading}")
 
     min_value = 1

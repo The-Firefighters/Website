@@ -1,5 +1,10 @@
 import networkx as nx
-from Firefighter_Problem import *
+from . import Firefighter_Problem
+
+
+
+# Now you can use firefighter
+
 
 def create_nx_graph(data):
     G = nx.DiGraph()
@@ -21,31 +26,32 @@ def run_algorithm(graph, selected_algorithm, source, target, budget):
     match selected_algorithm:
         case "Spreading MaxSave":
             print(selected_algorithm)
-            ans = spreading_maxsave(Graph=graph,budget=budget,source=source,targets=target)
+            ans = Firefighter_Problem.spreading_maxsave(Graph=graph,budget=budget,source=source,targets=target)
             return ans
         case "Spreading MinBudget":
             print(selected_algorithm)
-            ans = spreading_minbudget(Graph=graph,source=source,targets=target)
+            ans = Firefighter_Problem.spreading_minbudget(Graph=graph,source=source,targets=target)
             return ans
         case "Non-Spreading Dirlay MinBudget":
             print(selected_algorithm)
-            ans = non_spreading_dirlaynet_minbudget(Graph=graph,source=source,targets=target)
+            ans = Firefighter_Problem.non_spreading_dirlaynet_minbudget(Graph=graph,source=source,targets=target)
             return ans
         case "Non-Spreading MinBudget":
             print(selected_algorithm)
-            ans = non_spreading_minbudget(Graph=graph,source=source,targets=target)
-            return ans
+            ans = Firefighter_Problem.non_spreading_minbudget(Graph=graph,source=source,targets=target)
+            print(ans)
+            # return ans
         case "Heuristic Spreading Maxsave": 
             print(selected_algorithm)
-            ans = heuristic_maxsave(Graph=graph,budget=budget,source=source,targets=target,spreading=True)
+            ans = Firefighter_Problem.heuristic_maxsave(Graph=graph,budget=budget,source=source,targets=target,spreading=True)
             return ans
         case "Heuristic Spreading MinBudget":
             print(selected_algorithm)
-            ans = heuristic_minbudget(Graph=graph,source=source,targets=target,spreading=True)
+            ans = Firefighter_Problem.heuristic_minbudget(Graph=graph,source=source,targets=target,spreading=True)
             return ans
         case "Heuristic Non-Spreading MinBudget":
             print(selected_algorithm)
-            ans = heuristic_minbudget(Graph=graph,source=source,targets=target,spreading=False)
+            ans = Firefighter_Problem.heuristic_minbudget(Graph=graph,source=source,targets=target,spreading=False)
             return ans
         case _:
             raise ValueError("Unknown algorithm selected")
