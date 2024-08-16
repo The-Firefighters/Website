@@ -21,13 +21,15 @@ def create_nx_graph(data):
 
 def run_algorithm(graph, selected_algorithm, source, target, budget):
     G = create_nx_graph(graph)
-    budget = int(budget)
+    if budget:
+        budget = int(budget)
     ans = None
     
     match selected_algorithm:
         case "Spreading MaxSave":
             print(selected_algorithm)
             ans = Firefighter_Problem.spreading_maxsave(Graph=G,budget=budget,source=source,targets=target)
+            print(ans)
             return ans
         case "Spreading MinBudget":
             print(selected_algorithm)
@@ -41,6 +43,7 @@ def run_algorithm(graph, selected_algorithm, source, target, budget):
             print(selected_algorithm)
             ans = Firefighter_Problem.non_spreading_minbudget(Graph=G,source=source,targets=target)
             print(ans)
+            return ans
         case "Heuristic Spreading Maxsave": 
             print(selected_algorithm)
             ans = Firefighter_Problem.heuristic_maxsave(Graph=G,budget=budget,source=source,targets=target,spreading=True)
