@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './GraphBuilder.css';
 
-const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved }) => {
+const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved, currentStep, drawingResults }) => {
   const [startNode, setStartNode] = useState(null);
   const [tempEdge, setTempEdge] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -147,7 +147,27 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved }) => {
     setDraggedNode(null);
   }, [isGraphSaved]);
 
-  useEffect(() => {
+  useEffect(() => { // node colroing
+    if (drawingResults) {
+      const coloredNodes = new Set();
+      
+      // Accumulate colored nodes up to the current step
+      for (let step = 0; step <= currentStep; step++) {
+        if (drawingResults[step]) {
+          drawingResults[step].forEach(nodeId => coloredNodes.add(nodeId));
+        }
+      }
+
+      setNodes(prevNodes => prevNodes.map(node => ({
+        ...node,
+        color: coloredNodes.has(node.id) ? 'green' : 
+               (node.color === 'red' ? 'red' : 
+               (node.color === 'white' ? 'white' : 'lightblue'))
+      })));
+    }
+  }, [currentStep, drawingResults, setNodes]);
+
+  useEffect(() => { // click handler
     const svg = svgRef.current;
     svg.addEventListener('dblclick', handleDoubleClick);
     svg.addEventListener('click', handleClick);

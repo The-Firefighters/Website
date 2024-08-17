@@ -1,17 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './RunningInfo.css';
 
-const RunningInfo = ({ algorithmResult, selectedAlgorithm }) => {
+const RunningInfo = ({ algorithmResult, selectedAlgorithm, currentStep, setCurrentStep }) => {
+  const [maxStep, setMaxStep] = useState(0);
+
+  useEffect(() => {
+    if (algorithmResult && algorithmResult.DrawingResults) {
+      setMaxStep(Object.keys(algorithmResult.DrawingResults).length);
+    }
+  }, [algorithmResult]);
+
   const handlePrevious = () => {
-    console.log('Previous step');
+    setCurrentStep(prev => Math.max(0, prev - 1));
   };
 
   const handleNext = () => {
-    console.log('Next step');
+    setCurrentStep(prev => Math.min(maxStep, prev + 1));
   };
 
   const handleFastForward = () => {
-    console.log('Fast forward');
+    setCurrentStep(maxStep);
   };
 
   const formatStrategy = (strategy) => {
@@ -68,15 +76,16 @@ const RunningInfo = ({ algorithmResult, selectedAlgorithm }) => {
       <div className="info-content">
         <p>Algorithm has finished running. Use the controls below to navigate through the steps.</p>
         <p>Selected Algorithm: {selectedAlgorithm}</p>
+        <p>Current Step: {currentStep} / {maxStep}</p>
       </div>
       <div className="button-container">
-        <button className="control-button" onClick={handlePrevious}>
+        <button className="control-button" onClick={handlePrevious} disabled={currentStep === 0}>
           &#8592; Previous
         </button>
-        <button className="control-button" onClick={handleNext}>
+        <button className="control-button" onClick={handleNext} disabled={currentStep === maxStep}>
           Next &#8594;
         </button>
-        <button className="control-button" onClick={handleFastForward}>
+        <button className="control-button" onClick={handleFastForward} disabled={currentStep === maxStep}>
           Fast Forward &#8594;|
         </button>
       </div>

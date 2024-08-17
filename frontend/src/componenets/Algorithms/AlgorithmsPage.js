@@ -13,6 +13,7 @@ const AlgorithmPage = () => {
   const [shouldRunAlgorithm, setShouldRunAlgorithm] = useState(false);
   const [algorithmResult, setAlgorithmResult] = useState(null);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState('');
+  const [currentStep, setCurrentStep] = useState(0);
 
   const memoizedSetNodes = useCallback((newNodes) => {
     setNodes(newNodes);
@@ -59,6 +60,8 @@ const AlgorithmPage = () => {
             setEdges={memoizedSetEdges}
             isGraphSaved={isGraphSaved}
             disabled={isAlgorithmRunning}
+            currentStep={currentStep}
+            drawingResults={algorithmResult?.DrawingResults}
           />
         </div>
         <div className="info-box">
@@ -93,7 +96,10 @@ const AlgorithmPage = () => {
               setIsAlgorithmRunning={setIsAlgorithmRunning}
               shouldRunAlgorithm={shouldRunAlgorithm}
               setShouldRunAlgorithm={setShouldRunAlgorithm}
-              setAlgorithmResult={setAlgorithmResult}
+              setAlgorithmResult={(result) => {
+                setAlgorithmResult(result);
+                setCurrentStep(0);
+              }}
               setSelectedAlgorithm={setSelectedAlgorithm}
             />
           )}
@@ -101,6 +107,8 @@ const AlgorithmPage = () => {
             <RunningInfo 
               algorithmResult={algorithmResult} 
               selectedAlgorithm={selectedAlgorithm}
+              currentStep={currentStep}
+              setCurrentStep={setCurrentStep}
             />
           )}
           {!isAlgorithmRunning && (
