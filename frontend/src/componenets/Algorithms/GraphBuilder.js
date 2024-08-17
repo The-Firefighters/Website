@@ -147,19 +147,27 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved, currentS
     setDraggedNode(null);
   }, [isGraphSaved]);
 
-  useEffect(() => { // node coloring
-    if (drawingResults && drawingResults[currentStep]) {
-      const nodesToColor = drawingResults[currentStep];
+  useEffect(() => { // node colroing
+    if (drawingResults) {
+      const coloredNodes = new Set();
+      
+      // Accumulate colored nodes up to the current step
+      for (let step = 0; step <= currentStep; step++) {
+        if (drawingResults[step]) {
+          drawingResults[step].forEach(nodeId => coloredNodes.add(nodeId));
+        }
+      }
+
       setNodes(prevNodes => prevNodes.map(node => ({
         ...node,
-        color: nodesToColor.includes(node.id) ? 'green' : 
+        color: coloredNodes.has(node.id) ? 'green' : 
                (node.color === 'red' ? 'red' : 
                (node.color === 'white' ? 'white' : 'lightblue'))
       })));
     }
   }, [currentStep, drawingResults, setNodes]);
 
-  useEffect(() => {
+  useEffect(() => { // click handler
     const svg = svgRef.current;
     svg.addEventListener('dblclick', handleDoubleClick);
     svg.addEventListener('click', handleClick);
