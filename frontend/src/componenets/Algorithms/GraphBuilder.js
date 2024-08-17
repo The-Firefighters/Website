@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './GraphBuilder.css';
 
-const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved }) => {
+const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved, currentStep, drawingResults }) => {
   const [startNode, setStartNode] = useState(null);
   const [tempEdge, setTempEdge] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -146,6 +146,18 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved }) => {
     setIsDragging(false);
     setDraggedNode(null);
   }, [isGraphSaved]);
+
+  useEffect(() => { // node coloring
+    if (drawingResults && drawingResults[currentStep]) {
+      const nodesToColor = drawingResults[currentStep];
+      setNodes(prevNodes => prevNodes.map(node => ({
+        ...node,
+        color: nodesToColor.includes(node.id) ? 'green' : 
+               (node.color === 'red' ? 'red' : 
+               (node.color === 'white' ? 'white' : 'lightblue'))
+      })));
+    }
+  }, [currentStep, drawingResults, setNodes]);
 
   useEffect(() => {
     const svg = svgRef.current;
