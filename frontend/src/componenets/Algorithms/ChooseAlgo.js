@@ -89,6 +89,9 @@ const ChooseAlgo = ({
     const newSourceNode = Number(nodeId);
     setSourceNode(newSourceNode);
     
+    // Remove the new source node from target nodes if it's there
+    setTargetNodes(prev => prev.filter(id => id !== newSourceNode));
+    
     setNodes(prevNodes => prevNodes.map(node => ({
       ...node,
       color: node.id === newSourceNode ? 'red' : (targetNodes.includes(node.id) ? 'white' : 'lightblue')
@@ -97,6 +100,10 @@ const ChooseAlgo = ({
 
   const handleTargetNodesChange = (nodeId) => {
     const newNodeId = Number(nodeId);
+    
+    // Ensure the source node is not added to target nodes
+    if (newNodeId === sourceNode) return;
+    
     setTargetNodes(prev => {
       const newTargets = prev.includes(newNodeId)
         ? prev.filter(id => id !== newNodeId)
