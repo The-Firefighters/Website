@@ -153,15 +153,17 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved, currentS
       .map(edge => edge.source === nodeId ? edge.target : edge.source);
   }, [edges]);
 
-  useEffect(() => {
+ useEffect(() => {
   if (drawingResults) {
     const coloredNodes = new Set();
     const infectedNodes = new Set();
     const vaccinatedNodes = new Set();
+    const indirectedNodes = new Set();
     const sourceNode = nodes.find(node => node.color === 'red')?.id;
     
     if (sourceNode !== undefined) {
       infectedNodes.add(sourceNode);
+      coloredNodes.add(sourceNode);
     }
 
     // Function to spread vaccination
@@ -170,12 +172,17 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved, currentS
       const newVaccinatedNodes = new Set();
       vaccinatedNodes.forEach(nodeId => {
         getNeighbors(nodeId).forEach(neighborId => {
-          if (!infectedNodes.has(neighborId) && !coloredNodes.has(neighborId) && !vaccinatedNodes.has(neighborId)) {
+          if (!coloredNodes.has(neighborId)) {
             newVaccinatedNodes.add(neighborId);
           }
         });
       });
-      newVaccinatedNodes.forEach(nodeId => vaccinatedNodes.add(nodeId));
+      newVaccinatedNodes.forEach(nodeId => {
+        if (!coloredNodes.has(nodeId)) {
+          indirectedNodes.add(nodeId);
+          coloredNodes.add(nodeId);
+        }
+      });
     };
 
     // Function to spread infection
@@ -183,37 +190,49 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved, currentS
       const newInfectedNodes = new Set();
       infectedNodes.forEach(nodeId => {
         getNeighbors(nodeId).forEach(neighborId => {
-          if (!coloredNodes.has(neighborId) && !infectedNodes.has(neighborId) && !vaccinatedNodes.has(neighborId)) {
+          if (!coloredNodes.has(neighborId)) {
             newInfectedNodes.add(neighborId);
           }
         });
       });
-      newInfectedNodes.forEach(nodeId => infectedNodes.add(nodeId));
+      newInfectedNodes.forEach(nodeId => {
+        if (!coloredNodes.has(nodeId)) {
+          infectedNodes.add(nodeId);
+          coloredNodes.add(nodeId);
+        }
+      });
     };
 
     // Simulate the process step by step
-    for (let step = 1; step <= currentStep; step++) {
+    for (let step = 0; step <= currentStep; step++) {
+      if (step === 0) {
+        // Step 0: Only the source node is infected
+        continue;
+      }
+
+      // Step 1: Spread vaccination (prepare to turn neighbors blue)
+      spreadVaccination();
+      
       if (drawingResults[step]) {
         // Step 2: Directly vaccinate nodes (turn them green)
         drawingResults[step].forEach(nodeId => {
-          coloredNodes.add(nodeId);
-          infectedNodes.delete(nodeId);
-          vaccinatedNodes.add(nodeId);
+          if (!coloredNodes.has(nodeId)) {
+            coloredNodes.add(nodeId);
+            infectedNodes.delete(nodeId);
+            vaccinatedNodes.add(nodeId);
+          }
         });
       }
       
-      // Step 1: Spread vaccination (turn neighbors blue)
-      spreadVaccination();
-      
-      // Step 3: Spread infection (turn neighbors red)
+      // Step 3: Spread infection (turn uncolored neighbors red)
       spreadInfection();
     }
 
     setNodes(prevNodes => prevNodes.map(node => ({
       ...node,
-      color: coloredNodes.has(node.id) ? 'green' : 
-             (infectedNodes.has(node.id) ? 'red' : 
-             (vaccinatedNodes.has(node.id) ? 'blue' :
+      color: infectedNodes.has(node.id) ? 'red' : 
+             (coloredNodes.has(node.id) && vaccinatedNodes.has(node.id) ? 'green' : 
+             (indirectedNodes.has(node.id) ? 'blue' :
              (node.id === sourceNode ? 'red' : 'lightblue')))
     })));
   }

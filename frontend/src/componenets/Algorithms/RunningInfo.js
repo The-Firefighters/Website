@@ -7,7 +7,7 @@ const RunningInfo = ({ algorithmResult, selectedAlgorithm, currentStep, setCurre
 
   useEffect(() => {
     if (algorithmResult && algorithmResult.DrawingResults) {
-      setMaxStep(Object.keys(algorithmResult.DrawingResults).length);
+      setMaxStep(Object.keys(algorithmResult.DrawingResults).length+1);
     }
     setIsNonSpreadingAlgorithm(selectedAlgorithm.toLowerCase().includes('non-spreading'));
   }, [algorithmResult, selectedAlgorithm]);
