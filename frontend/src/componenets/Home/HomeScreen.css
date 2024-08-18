@@ -18,32 +18,46 @@
   padding: 30px;
 }
 
+.content-container .button-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 20px !important;
+  margin-top: 20px !important;
+  /* Reduced from 30px to 20px to move buttons higher */
+}
+
 h2,
 h3,
 h4 {
   font-family: 'Poppins', sans-serif;
   color: #333333;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  /* Reduced from 20px to 10px */
 }
 
 h2 {
   font-size: 32px;
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  /* Reduced from 30px to 20px */
 }
 
 h3 {
   font-size: 24px;
-  margin-top: 30px;
+  margin-top: 20px;
+  /* Reduced from 30px to 20px */
 }
 
 h4 {
   font-size: 18px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+  /* Reduced from 10px to 5px */
 }
 
 .section {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  /* Reduced from 30px to 20px */
 }
 
 .text-box {
@@ -51,9 +65,9 @@ h4 {
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 15px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+  /* Reduced from 15px to 10px */
   height: 100%;
-  /* Ensure full height */
   display: flex;
   flex-direction: column;
 }
@@ -63,7 +77,6 @@ h4 {
   font-size: 16px;
   line-height: 1.6;
   flex-grow: 1;
-  /* Allow text to expand */
 }
 
 .subsections {
@@ -74,12 +87,21 @@ h4 {
 
 .subsection {
   flex-basis: calc(50% - 10px);
-  margin-bottom: 20px;
+  margin-bottom: 15px;
+  /* Reduced from 20px to 15px */
   display: flex;
   flex-direction: column;
 }
 
-.try-it-out-button, .information-button {
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.try-it-out-button,
+.information-button {
   padding: 12px 25px;
   border: none;
   color: #FFFFFF;
@@ -88,8 +110,8 @@ h4 {
   text-decoration: none;
   display: inline-block;
   margin-top: 30px;
-  margin-right: 5px;
-  margin-left: 5px;
+  margin-right: 0px;
+  margin-left: 0px;
   font-family: 'Poppins', sans-serif;
   font-size: 18px;
   font-weight: 500;
@@ -143,3 +165,5 @@ h4 {
     opacity: 1;
   }
 }
+
+
