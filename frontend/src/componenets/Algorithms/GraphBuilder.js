@@ -154,65 +154,70 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved, currentS
   }, [edges]);
 
   useEffect(() => {
-    if (drawingResults) {
-      const coloredNodes = new Set();
-      const infectedNodes = new Set();
-      const sourceNode = nodes.find(node => node.color === 'red')?.id;
-      
-      if (sourceNode !== undefined) {
-        infectedNodes.add(sourceNode);
-      }
-  
-      // Function to spread infection
-      const spreadInfection = () => {
-        const newInfectedNodes = new Set();
-        infectedNodes.forEach(nodeId => {
-          getNeighbors(nodeId).forEach(neighborId => {
-            if (!coloredNodes.has(neighborId) && !infectedNodes.has(neighborId)) {
-              newInfectedNodes.add(neighborId);
-            }
-          });
-        });
-        newInfectedNodes.forEach(nodeId => infectedNodes.add(nodeId));
-      };
-  
-      // Function to spread vaccination
-      const spreadVaccination = () => {
-        if (isNonSpreadingAlgorithm) return;
-        const newColoredNodes = new Set();
-        coloredNodes.forEach(nodeId => {
-          getNeighbors(nodeId).forEach(neighborId => {
-            if (!infectedNodes.has(neighborId) && !coloredNodes.has(neighborId)) {
-              newColoredNodes.add(neighborId);
-            }
-          });
-        });
-        newColoredNodes.forEach(nodeId => coloredNodes.add(nodeId));
-      };
-  
-      // Simulate the process step by step
-      for (let step = 1; step <= currentStep; step++) {
-        if (drawingResults[step]) {
-          // Direct vaccination
-          drawingResults[step].forEach(nodeId => {
-            coloredNodes.add(nodeId);
-            infectedNodes.delete(nodeId);
-          });
-        }
-        
-        // Spread infection and vaccination
-        spreadInfection();
-        spreadVaccination();
-      }
-  
-      setNodes(prevNodes => prevNodes.map(node => ({
-        ...node,
-        color: coloredNodes.has(node.id) ? 'green' : 
-               (infectedNodes.has(node.id) ? 'red' : 
-               (node.id === sourceNode ? 'red' : 'lightblue'))
-      })));
+  if (drawingResults) {
+    const coloredNodes = new Set();
+    const infectedNodes = new Set();
+    const vaccinatedNodes = new Set();
+    const sourceNode = nodes.find(node => node.color === 'red')?.id;
+    
+    if (sourceNode !== undefined) {
+      infectedNodes.add(sourceNode);
     }
-  }, [currentStep, drawingResults, setNodes, getNeighbors, isNonSpreadingAlgorithm, nodes]);
+
+    // Function to spread vaccination
+    const spreadVaccination = () => {
+      if (isNonSpreadingAlgorithm) return;
+      const newVaccinatedNodes = new Set();
+      vaccinatedNodes.forEach(nodeId => {
+        getNeighbors(nodeId).forEach(neighborId => {
+          if (!infectedNodes.has(neighborId) && !coloredNodes.has(neighborId) && !vaccinatedNodes.has(neighborId)) {
+            newVaccinatedNodes.add(neighborId);
+          }
+        });
+      });
+      newVaccinatedNodes.forEach(nodeId => vaccinatedNodes.add(nodeId));
+    };
+
+    // Function to spread infection
+    const spreadInfection = () => {
+      const newInfectedNodes = new Set();
+      infectedNodes.forEach(nodeId => {
+        getNeighbors(nodeId).forEach(neighborId => {
+          if (!coloredNodes.has(neighborId) && !infectedNodes.has(neighborId) && !vaccinatedNodes.has(neighborId)) {
+            newInfectedNodes.add(neighborId);
+          }
+        });
+      });
+      newInfectedNodes.forEach(nodeId => infectedNodes.add(nodeId));
+    };
+
+    // Simulate the process step by step
+    for (let step = 1; step <= currentStep; step++) {
+      if (drawingResults[step]) {
+        // Step 2: Directly vaccinate nodes (turn them green)
+        drawingResults[step].forEach(nodeId => {
+          coloredNodes.add(nodeId);
+          infectedNodes.delete(nodeId);
+          vaccinatedNodes.add(nodeId);
+        });
+      }
+      
+      // Step 1: Spread vaccination (turn neighbors blue)
+      spreadVaccination();
+      
+      // Step 3: Spread infection (turn neighbors red)
+      spreadInfection();
+    }
+
+    setNodes(prevNodes => prevNodes.map(node => ({
+      ...node,
+      color: coloredNodes.has(node.id) ? 'green' : 
+             (infectedNodes.has(node.id) ? 'red' : 
+             (vaccinatedNodes.has(node.id) ? 'blue' :
+             (node.id === sourceNode ? 'red' : 'lightblue')))
+    })));
+  }
+}, [currentStep, drawingResults, setNodes, getNeighbors, isNonSpreadingAlgorithm, nodes]);
 
   useEffect(() => {
     const svg = svgRef.current;
