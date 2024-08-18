@@ -1,8 +1,9 @@
 .toolbar {
   background: linear-gradient(135deg, #05445E, #2A43A7);
-  padding: 15px 30px;
+  padding: 0px 20px;
   display: flex;
   justify-content: space-between;
+  /* This ensures the title and buttons are on opposite sides */
   align-items: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   position: sticky;
@@ -12,15 +13,8 @@
 
 .toolbar-title {
   color: #FFFFFF;
-  text-align: center;
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.toolbar-title h1 {
   margin: 0;
   font-size: 28px;
   letter-spacing: 1.2px;
@@ -62,22 +56,24 @@
   transform: translateY(1px);
 }
 
+/* Media Queries */
 @media (max-width: 1024px) {
   .toolbar {
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-between;
+    /* Maintain space between title and buttons */
   }
 
   .toolbar-title {
-    position: static;
-    transform: none;
-    width: 100%;
+    width: auto;
     margin-bottom: 15px;
     order: -1;
+    /* Keeps the title at the top */
   }
 
   .toolbar-buttons {
-    justify-content: center;
+    justify-content: flex-end;
+    /* Ensure buttons align to the right on smaller screens */
   }
 }
 
