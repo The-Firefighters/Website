@@ -3,12 +3,14 @@ import './RunningInfo.css';
 
 const RunningInfo = ({ algorithmResult, selectedAlgorithm, currentStep, setCurrentStep }) => {
   const [maxStep, setMaxStep] = useState(0);
+  const [isNonSpreadingAlgorithm, setIsNonSpreadingAlgorithm] = useState(false);
 
   useEffect(() => {
     if (algorithmResult && algorithmResult.DrawingResults) {
       setMaxStep(Object.keys(algorithmResult.DrawingResults).length);
     }
-  }, [algorithmResult]);
+    setIsNonSpreadingAlgorithm(selectedAlgorithm.toLowerCase().includes('non-spreading'));
+  }, [algorithmResult, selectedAlgorithm]);
 
   const handlePrevious = () => {
     setCurrentStep(prev => Math.max(0, prev - 1));
@@ -76,6 +78,7 @@ const RunningInfo = ({ algorithmResult, selectedAlgorithm, currentStep, setCurre
       <div className="info-content">
         <p>Algorithm has finished running. Use the controls below to navigate through the steps.</p>
         <p>Selected Algorithm: {selectedAlgorithm}</p>
+        <p>Algorithm Type: {isNonSpreadingAlgorithm ? 'Non-Spreading' : 'Spreading'}</p>
         <p>Current Step: {currentStep} / {maxStep}</p>
       </div>
       <div className="button-container">

@@ -1,15 +1,15 @@
-// GraphBuilder.js
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './GraphBuilder.css';
 
-const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved, currentStep, drawingResults }) => {
+const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved, currentStep, drawingResults, selectedAlgorithm }) => {
   const [startNode, setStartNode] = useState(null);
   const [tempEdge, setTempEdge] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [draggedNode, setDraggedNode] = useState(null);
   const svgRef = useRef(null);
 
-  // Function to find the lowest available ID
+  const isNonSpreadingAlgorithm = selectedAlgorithm.toLowerCase().includes('non-spreading');
+
   const findLowestAvailableId = useCallback(() => {
     const usedIds = new Set(nodes.map(node => node.id));
     let newId = 0;
@@ -20,7 +20,7 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved, currentS
   }, [nodes]);
 
   const findNonOverlappingPosition = (newNode, existingNodes) => {
-    const minDistance = 40; // Minimum distance between nodes
+    const minDistance = 40;
     let attempts = 0;
     const maxAttempts = 100;
 
@@ -147,27 +147,74 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved, currentS
     setDraggedNode(null);
   }, [isGraphSaved]);
 
-  useEffect(() => { // node colroing
+  const getNeighbors = useCallback((nodeId) => {
+    return edges
+      .filter(edge => edge.source === nodeId || edge.target === nodeId)
+      .map(edge => edge.source === nodeId ? edge.target : edge.source);
+  }, [edges]);
+
+  useEffect(() => {
     if (drawingResults) {
       const coloredNodes = new Set();
+      const infectedNodes = new Set();
+      const sourceNode = nodes.find(node => node.color === 'red')?.id;
       
-      // Accumulate colored nodes up to the current step
-      for (let step = 0; step <= currentStep; step++) {
-        if (drawingResults[step]) {
-          drawingResults[step].forEach(nodeId => coloredNodes.add(nodeId));
-        }
+      if (sourceNode !== undefined) {
+        infectedNodes.add(sourceNode);
       }
-
+  
+      // Function to spread infection
+      const spreadInfection = () => {
+        const newInfectedNodes = new Set();
+        infectedNodes.forEach(nodeId => {
+          getNeighbors(nodeId).forEach(neighborId => {
+            if (!coloredNodes.has(neighborId) && !infectedNodes.has(neighborId)) {
+              newInfectedNodes.add(neighborId);
+            }
+          });
+        });
+        newInfectedNodes.forEach(nodeId => infectedNodes.add(nodeId));
+      };
+  
+      // Function to spread vaccination
+      const spreadVaccination = () => {
+        if (isNonSpreadingAlgorithm) return;
+        const newColoredNodes = new Set();
+        coloredNodes.forEach(nodeId => {
+          getNeighbors(nodeId).forEach(neighborId => {
+            if (!infectedNodes.has(neighborId) && !coloredNodes.has(neighborId)) {
+              newColoredNodes.add(neighborId);
+            }
+          });
+        });
+        newColoredNodes.forEach(nodeId => coloredNodes.add(nodeId));
+      };
+  
+      // Simulate the process step by step
+      for (let step = 1; step <= currentStep; step++) {
+        if (drawingResults[step]) {
+          // Direct vaccination
+          drawingResults[step].forEach(nodeId => {
+            coloredNodes.add(nodeId);
+            infectedNodes.delete(nodeId);
+          });
+        }
+        
+        // Spread infection and vaccination
+        spreadInfection();
+        spreadVaccination();
+      }
+  
       setNodes(prevNodes => prevNodes.map(node => ({
         ...node,
         color: coloredNodes.has(node.id) ? 'green' : 
-               (node.color === 'red' ? 'red' : 
-               (node.color === 'white' ? 'white' : 'lightblue'))
+               (infectedNodes.has(node.id) ? 'red' : 
+               (node.id === sourceNode ? 'red' : 'lightblue'))
       })));
     }
-  }, [currentStep, drawingResults, setNodes]);
+  }, [currentStep, drawingResults, setNodes, getNeighbors, isNonSpreadingAlgorithm, nodes]);
 
-  useEffect(() => { // click handler
+  useEffect(() => {
     const svg = svgRef.current;
     svg.addEventListener('dblclick', handleDoubleClick);
     svg.addEventListener('click', handleClick);
@@ -232,7 +279,7 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved, currentS
             cx={node.x}
             cy={node.y}
             r="15"
-            fill={node.color || (node.id === startNode?.id ? "yellow" : "lightblue")}
+            fill={node.color || 'lightblue'}
             stroke="blue"
             strokeWidth="2"
           />
@@ -250,6 +297,5 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved, currentS
       ))}
     </svg>
   );
-};
-
+}
 export default GraphBuilder;

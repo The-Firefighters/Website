@@ -62,6 +62,7 @@ const AlgorithmPage = () => {
             disabled={isAlgorithmRunning}
             currentStep={currentStep}
             drawingResults={algorithmResult?.DrawingResults}
+            selectedAlgorithm={selectedAlgorithm}
           />
         </div>
         <div className="info-box">
