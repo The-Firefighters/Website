@@ -294,32 +294,54 @@ const GraphBuilder = ({ nodes, setNodes, edges, setEdges, isGraphSaved, currentS
   };
 
   return (
-    <svg ref={svgRef} className="graph-builder" width="100%" height="100%">
-      {edges.map((edge, index) => renderEdge(edge, index))}
-      {tempEdge && renderEdge(tempEdge, -1, true)}
-      {nodes.map((node) => (
-        <g key={node.id}>
-          <circle
-            cx={node.x}
-            cy={node.y}
-            r="15"
-            fill={node.color || 'lightblue'}
-            stroke="blue"
-            strokeWidth="2"
-          />
-          <text
-            x={node.x}
-            y={node.y}
-            dy=".3em"
-            textAnchor="middle"
-            fill="black"
-            fontSize="12px"
-          >
-            {node.id}
-          </text>
-        </g>
-      ))}
-    </svg>
+    <div className="graph-builder-container">
+      <div className="legend-box">
+        <h3>Node Legend</h3>
+        <div className="legend-item">
+          <div className="legend-color" style={{ backgroundColor: 'red' }}></div>
+          <span>Infected</span>
+        </div>
+        <div className="legend-item">
+          <div className="legend-color" style={{ backgroundColor: 'green' }}></div>
+          <span>Directly<br/>Vaccinated</span>
+        </div>
+        <div className="legend-item">
+          <div className="legend-color" style={{ backgroundColor: 'blue' }}></div>
+          <span>Indirect<br/>Vaccination</span>
+        </div>
+        <div className="legend-item">
+          <div className="legend-color" style={{ backgroundColor: 'lightblue' }}></div>
+          <span>Vulnerable</span>
+        </div>
+      </div>
+      <svg ref={svgRef} className="graph-builder" width="100%" height="100%">
+        {edges.map((edge, index) => renderEdge(edge, index))}
+        {tempEdge && renderEdge(tempEdge, -1, true)}
+        {nodes.map((node) => (
+          <g key={node.id}>
+            <circle
+              cx={node.x}
+              cy={node.y}
+              r="15"
+              fill={node.color || 'lightblue'}
+              stroke="blue"
+              strokeWidth="2"
+            />
+            <text
+              x={node.x}
+              y={node.y}
+              dy=".3em"
+              textAnchor="middle"
+              fill="black"
+              fontSize="12px"
+            >
+              {node.id}
+            </text>
+          </g>
+        ))}
+      </svg>
+    </div>
   );
-}
+};
+
 export default GraphBuilder;
