@@ -3,7 +3,7 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Popins', sans-serif;
     color: #333333;
     background-color: #F5F5F5;
 }
@@ -14,69 +14,69 @@ h1, h2 {
 }
 
 h1 {
-    font-size: 2.5rem;
+    font-size: 2.7rem;
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
 }
 
 h2 {
-    font-size: 1.8rem;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
+    font-size: 2rem;
+    margin-top: 1rem;
+    margin-bottom: 1.2rem;
 }
 
 /* Section */
 section {
-    margin-bottom: 3rem;
+    margin-bottom: 3.5rem;
     background-color: #FFFFFF;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1.8rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 /* Member Grid */
 .member-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 2.2rem;
 }
 
 /* Member Card */
 .member-card {
     background-color: #FFFFFF;
-    border-radius: 8px;
+    border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
+    box-shadow: 0 6px 8px rgba(0,0,0,0.1);
+    transition: transform 0.4s ease;
 }
 
 .member-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px);
 }
 
 .member-card img {
     width: 100%;
-    height: 200px;
+    height: 220px;
     object-fit: cover;
 }
 
 /* Member Card Text */
 .member-card h3 {
-    font-size: 1.2rem;
-    margin: 1rem;
+    font-size: 1.3rem;
+    margin: 1.2rem;
     color: #3454D1;
 }
 
 .member-card p {
-    margin: 0 1rem 1rem;
-    font-size: 0.9rem;
+    margin: 0 1.2rem 1.2rem;
+    font-size: 1rem;
 }
 
 /* Member Links */
 .member-links {
     display: flex;
     justify-content: space-around;
-    padding: 0.5rem;
+    padding: 0.6rem;
     background-color: #f0f0f0;
 }
 
@@ -84,6 +84,7 @@ section {
     text-decoration: none;
     color: #189AB4;
     font-weight: bold;
+    font-size: 0.95rem;
 }
 
 .member-links a:hover {
@@ -93,13 +94,14 @@ section {
 /* Project Info Links */
 .project-links a {
     display: inline-block;
-    margin-top: 0.5rem;
-    padding: 0.5rem 1rem;
+    margin-top: 0.6rem;
+    padding: 0.6rem 1.2rem;
     background-color: #3454D1;
     color: #FFFFFF;
     text-decoration: none;
-    border-radius: 4px;
+    border-radius: 5px;
     transition: background-color 0.3s ease;
+    font-size: 0.95rem;
 }
 
 .project-links a:hover {
@@ -109,15 +111,15 @@ section {
 /* Responsive Styles */
 @media (max-width: 768px) {
     .contact {
-        padding: 1rem;
+        padding: 1.2rem;
     }
 
     h1 {
-        font-size: 2rem;
+        font-size: 2.2rem;
     }
 
     h2 {
-        font-size: 1.5rem;
+        font-size: 1.7rem;
     }
 
     .member-grid {

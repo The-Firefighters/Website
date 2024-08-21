@@ -1,28 +1,25 @@
 import React from "react";
-import './Contact.css';
-import almogImage from './images/almogIMG.jpeg';
-import shakedImage from './images/shakedIMG.jpeg';
-import yuvalImage from './images/yuvalIMG.jpeg';
+import "./Contact.css";
+import almogImage from "./images/almogIMG.jpeg";
+import shakedImage from "./images/shakedIMG.jpeg";
+import yuvalImage from "./images/yuvalIMG.jpeg";
 
 const teamMembers = [
     {
         name: "Shaked Levi",
         image: shakedImage,
-        description: "blabla",
         github: "https://github.com/20shaked20",
         linkedin: "https://www.linkedin.com/in/shaked-levi-lin/"
     },
     {
         name: "Almog David",
         image: almogImage,
-        description: "blabla",
         github: "https://github.com/Almog-David",
         linkedin: "https://www.linkedin.com/in/almog-david/"
     },
     {
         name: "Yuval Bubnovsky",
         image: yuvalImage,
-        description: "blabla",
         github: "https://github.com/YuvalBubnovsky",
         linkedin: "https://www.linkedin.com/in/yuvalbubnovsky/"
     },
@@ -35,13 +32,19 @@ function Contact() {
             
             <section className="about-us">
                 <h2>Who We Are</h2>
-                <p>We are a group of students who developed this project as our final university assignment. <br/>
-                    Our team came together to explore and improve upon existing algorithms in the field of graphs algorithms.</p>
+                <p>
+                    We're a group of students from Ariel University who worked on this project as our final assignment. <br />
+                    We came together to dive into graph algorithms, aiming to build on and improve existing methods with fresh ideas and teamwork.
+                </p>
             </section>
             
             <section className="our-approach">
                 <h2>Our Approach</h2>
-                <p>In our project, we implemented a heuristic approach using local search to enhance the algorithm presented in [link to article]. Our method focuses on ....</p>
+                <p>
+                    In our ongoing efforts to optimize the solutions of the algorithms in the article{" "}
+                        <a href={"https://www.math.uwaterloo.ca/~cswamy/papers/firefighter-journ.pdf"} target="_blank" rel="noopener noreferrer">Approximability of the Firefighter Problem </a>
+                    , we have focused on improving the existing minbudget algorithms. <br /> By applying a local search algorithm, we have been able to significantly enhance the performance and efficiency of these algorithms. <br /> Our approach ensures that the resources required to contain and manage the spread of threats are minimized, providing a more effective and budget-conscious solution. <br /> This improvement reflects our commitment to advancing the methodologies used in this critical area.
+                </p>
             </section>
             
             <section className="team-members">
