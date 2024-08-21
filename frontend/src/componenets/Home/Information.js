@@ -13,22 +13,6 @@ function Information() {
     setActiveDropdown(prevActive => prevActive === id ? null : id);
   };
 
-  const SpreadingMinBudgetPsudo = `
-  $$
-  \\textbf{Stage 1: Input} \\\\
-  \\textbf{1.1} \\text{ Graph } G(V,E), \\text{source node } s, \\text{target set } T \\subseteq V \\\\
-  \\textbf{Stage 2: Binary Search} \\\\
-  \\textbf{2.1} \\text{ Perform a binary search on the target group } T \\\\
-  \\textbf{Stage 3: MaxSave Algorithm} \\\\
-  \\textbf{3.1} \\text{ Run the MaxSave algorithm with the budget } B \\text{ found in the binary search} \\\\
-  \\textbf{Stage 4: Budget Matching} \\\\
-  \\textbf{4.1} \\text{ Match the budget } B \\text{ so that it is minimal but still able to save all nodes of } T \\\\
-  \\textbf{Stage 5: Output} \\\\
-  \\textbf{5.1} \\text{ Return the approximated minimal budget } B
-  $$
-  `;
-
-
   const SpreadingMaxSavePsudo = `
   $$
   \\textbf{Stage 1: Input} \\\\
@@ -53,41 +37,88 @@ function Information() {
   \\textbf{5.1} \\text{ Return } \\Psi \\quad \\text{(The optimized vaccination strategy)}
   $$
   `;
+  const SpreadingMinBudgetPsudo = `
+  $$
+  \\textbf{Stage 1: Input} \\\\
+  \\textbf{1.1} \\text{ Graph } G(V,E), \\text{ source node } s, \\text{ target set } T \\subseteq V \\\\
+  \\textbf{Stage 2: Binary Search} \\\\
+  \\textbf{2.1} \\text{ Perform a binary search on the size of the target group } T \\\\
+  \\textbf{2.2} \\text{ Set } B \\text{ as the current median of the binary search} \\\\
+  \\textbf{Stage 3: Algorithm Execution} \\\\
+  \\textbf{3.1} \\text{ Run the MaxSave algorithm on the parameters of the problem with the budget } B \\\\
+  \\text{ that we found in the binary search} \\\\
+  \\textbf{Stage 4: Budget Matching} \\\\
+  \\textbf{4.1} \\text{ Match the budget } B \\text{ so that it is minimal but still able to save all nodes of } T \\\\
+  \\textbf{Stage 5: Output} \\\\
+  \\textbf{5.1} \\text{ Return } B \\text{ and } \\Psi \\text{ for the returned } B \\text{ (The approximated minimal budget)} \\\\
+  $$
+  `;
 
   const NonSpreadMinBudgetPsudo = `
   $$
   \\textbf{Stage 1: Input} \\\\
-  \\textbf{1.1} \\text{ Graph } G(V,E), \\text{source node } s, \\text{target node } t \\\\
-  \\textbf{Stage 2: Algorithm Execution} \\\\
-  \\textbf{2.1} \\text{ Find the Min Cut of } s-t \\text{ using Edmond Karp's / Ford Fulkerson algorithm} \\\\
+  \\textbf{1.1} \\text{ Graph } G(V,E), \\text{ source node } s, \\text{ target node } t \\\\
+  \\textbf{Stage 2: Min Cut} \\\\
+  \\textbf{2.1} \\text{ Find Min Cut of } s-t \\text{ (source, target) using Edmond Karp's \\ Ford Fulkerson algorithm} \\\\
   \\textbf{Stage 3: Output} \\\\
-  \\textbf{3.1} \\text{ Return the minimum cut value}
+  \\textbf{3.1} \\text{ Set } B \\text{ as the Minimum cut size} \\\\
+  \\textbf{3.2} \\text{ Set } \\Psi \\text{ where the Minimum cut nodes are vaccinated at time step 1} \\\\
+  \\textbf{3.3} \\text{ Return } B \\text{ and } \\Psi
   $$
   `;
 
   const NonSpreadDirlayMinBudgetPsudo = `
   $$
   \\textbf{Stage 1: Input} \\\\
-  \\textbf{1.1} \\text{ Directed layered graph } G(V,E), \\text{source node } s, \\text{target node } t, \\text{ and } l \\text{ layers} \\\\
+  \\textbf{1.1} \\text{ Directed layered graph } G(V,E), \\text{ source node } s, \\text{ target node } t, \\text{ and } l \\text{ layers} \\\\
+
   \\textbf{Stage 2: Vertex Capacitation} \\\\
   \\textbf{2.1} \\text{ Set capacity of each vertex } v \\in L_i \\text{ at } \\frac{1}{i \\cdot H(l)} \\\\
+
   \\textbf{Stage 3: Min Cut in Capacitated Network} \\\\
   \\textbf{3.1} \\text{ Find the min } s-t \\text{ cut in this capacitated network:} \\\\
-  \\quad \\textbf{3.1.1} \\text{ Apply a reduction to transfer the capacitated network from nodes to edges:} \\\\
-  \\quad \\textbf{3.1.2} \\text{ Construct a new graph } G' \\text{ where each vertex } v \\text{ is replaced with } v_{in} \\text{ and } v_{out} \\\\
-  \\quad \\textbf{3.1.3} \\text{ Add edge } (v_{in}, v_{out}) \\text{ with capacity equal to } v \\text{ in } G \\\\
-  \\quad \\textbf{3.1.4} \\text{ For each edge } (v, u) \\text{ in } G, \\text{ add edge } (v_{out}, u_{in}) \\text{ with capacity } +\\infty \\\\
-  \\quad \\textbf{3.1.5} \\text{ Apply Edmond Karp's / Ford Fulkerson algorithm on } G' \\text{ and denote the results as } H' \\\\
-  \\quad \\textbf{3.1.6} \\text{ Given } H', \\text{ find the min } s-t \\text{ cut and get the nodes we need from it:} \\\\
-  \\quad \\textbf{3.1.7} \\text{ Denote it as } (N_1 \\ldots N_l), N_i \\subseteq L_i \\\\
+  \\quad \\textbf{3.1.1} \\text{ Apply reduction to transfer capacitated network from nodes to edges:} \\\\
+  \\quad \\textbf{3.1.2} \\text{ Construct new graph } G': \\\\
+  \\quad \\quad \\textbf{3.1.2.1} \\text{ Replace each vertex } v \\text{ with two vertices } v_{in} \\text{ and } v_{out} \\\\
+  \\quad \\quad \\textbf{3.1.2.2} \\text{ Add edge } (v_{in}, v_{out}) \\text{ with capacity equal to } v \\text{'s capacity in } G \\\\
+  \\quad \\quad \\textbf{3.1.2.3} \\text{ For each edge } (v, u) \\text{ in } G, \\text{ add edge } (v_{out}, u_{in}) \\text{ with capacity } +\\infty \\\\
+  \\quad \\textbf{3.1.3} \\text{ Apply Edmond Karp's / Ford Fulkerson algorithm on } G', \\text{ denote results as } H' \\\\
+  \\quad \\textbf{3.1.4} \\text{ Find min } s-t \\text{ cut in } H' \\text{ to get required nodes} \\\\
+  \\quad \\textbf{3.1.5} \\text{ Denote result as } (N_1 \\cup \\cdots \\cup N_l) \\text{ with } N_i \\subseteq L_i \\\\
+
   \\textbf{Stage 4: Vaccination Strategy} \\\\
-  \\textbf{4.1} \\text{ The algorithm vaccinates the vertices of } N_i \\text{ as follows:} \\\\
-  \\quad \\textbf{4.1.1} \\text{ Construct an upper triangular matrix } M' \\\\
-  \\quad \\textbf{4.1.2} M'_{ij} := \\frac{|N_j|}{j}, 1 \\leq i \\leq j \\leq l \\\\
-  \\quad \\textbf{4.1.3} \\text{ For any column } j, \\text{ the column sum is exactly } |N_j| \\\\
+  \\textbf{4.1} \\text{ The algorithm vaccinates the vertices } N_i \\text{ in } i \\text{ days as follows:} \\\\
+  \\quad \\textbf{4.1.1} \\text{ Construct upper triangular matrix } M': \\\\
+  \\quad \\quad \\textbf{4.1.1.1} M'_{ij} := \\frac{|N_j|}{j}, 1 \\leq i \\leq j \\leq l \\text{ (For any col } j, \\text{ col sum is exactly } |N_j|) \\\\
+
   \\textbf{Stage 5: Output} \\\\
-  \\textbf{5.1} \\text{ Return vaccination strategy based on } M'
+  \\textbf{5.1} \\text{ Apply Fact 1 to construct the corresponding integral matrix } M \\text{ from } M' \\\\
+  \\textbf{5.2} \\text{ Set } B \\text{ as the maximum sum of the rows of } M \\\\
+  \\textbf{5.3} \\Psi: \\text{ on time step } i, \\text{ vaccinate } M_{ij} \\text{ nodes from layer } j, \\text{ for all } i \\leq j \\leq l \\\\
+  \\textbf{5.4} \\text{ Return } B \\text{ and } \\Psi
   $$`;
+
+  const HeuristicMaxSavePsudo = ``
+
+
+  const HeuristicMinBudgetPsudo = ` 
+  $$
+  \\textbf{Stage 1: Input} \\\\
+  \\textbf{1.1} \\text{ Graph } G(V,E), \\text{ source node } s, \\text{ target set } T \\subseteq V \\\\
+  \\textbf{Stage 2: Binary Search} \\\\
+  \\textbf{2.1} \\text{ Perform a binary search on the size of the target group } T \\\\
+  \\textbf{2.2} \\text{ Set } B \\text{ as the current median of the binary search} \\\\
+  \\textbf{Stage 3: Algorithm Execution} \\\\
+  \\textbf{3.1} \\text{ Run the Heuristic MaxSave algorithm on the parameters of the problem with the budget } B \\\\
+  \\text{ that we found in the binary search,  and select if spreading or not} \\\\
+  \\textbf{Stage 4: Budget Matching} \\\\
+  \\textbf{4.1} \\text{ Match the budget } B \\text{ so that it is minimal but still able to save all nodes of } T \\\\
+  \\textbf{Stage 5: Output} \\\\
+  \\textbf{5.1} \\text{ Return } B \\text{ and } \\Psi \\text{ for the returned } B \\text{ (The approximated minimal budget)} \\\\
+  $$
+  `;
+  
+
 
   const dropdowns = [
     {
@@ -118,14 +149,14 @@ function Information() {
       id: 'Heuristic-Maxsave',
       title: 'Heuristic Maxsave',
       content: "TBD",
-      latex: ""
+      latex: HeuristicMaxSavePsudo
 
     },
     {
       id: 'Heuristic-Minbudget',
       title: 'Heuristic Minbudget',
       content: "We will use in the same approach, just like in the Spreading MinBudget algorithm. Therefore the algorithm will be: ", 
-      latex: ""
+      latex: HeuristicMinBudgetPsudo
 
     }
   ];
