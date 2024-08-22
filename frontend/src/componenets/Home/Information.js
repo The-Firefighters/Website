@@ -16,27 +16,29 @@ function Information() {
   const SpreadingMaxSavePsudo = `
   $$
   \\textbf{Stage 1: Input} \\\\
-  \\textbf{1.1} \\text{ Graph } G(V,E), \\text{source node } s, \\text{target set } T \\subseteq V, \\text{budget } B \\\\
-  \\textbf{Stage 2: Initial Calculations} \\\\
-  \\textbf{2.1} \\text{ For each } v \\in V: \\\\
-  \\quad \\textbf{2.1.1} \\text{ Calculate } \\Gamma(v) = \\{(u,\\tau) \\mid u \\in V \\text{ and } 0 < \\tau \\leq d(s,v) - d(u,v)\\} \\\\
-  \\quad \\textbf{2.1.2} \\text{ where } d(x,y) \\text{ is the shortest distance between } x \\text{ and } y \\\\
-  \\textbf{2.2} \\text{ For each possible } (u,\\tau) \\text{ pair:} \\\\
-  \\quad \\textbf{2.2.1} \\text{ Calculate } S(u,\\tau) = \\{v \\in T : (u,\\tau) \\in \\Gamma(v)\\} \\\\
-  \\quad \\textbf{2.2.2} \\text{ (Nodes in } T \\text{ saved by vaccinating } u \\text{ at time } \\tau) \\\\
-  \\textbf{Stage 3: Strategy Initialization} \\\\
-  \\textbf{3.1} \\varepsilon \\gets \\text{ all possible } (u,\\tau) \\text{ pairs} \\\\
-  \\textbf{3.2} \\Psi \\gets \\emptyset \\quad \\text{(Initialize empty vaccination strategy)} \\\\
-  \\textbf{Stage 4: Strategy Optimization} \\\\
-  \\textbf{4.1} \\text{ While } |\\Psi| < B \\text{ and } \\varepsilon \\text{ is not empty:} \\\\
-  \\quad \\textbf{4.1.1} \\text{ Find } (u^*,\\tau^*) \\text{ that maximizes } |S(u,\\tau) \\setminus \\bigcup_{(u',\\tau') \\in \\Psi} S(u',\\tau')| \\text{ for } (u,\\tau) \\in \\varepsilon \\\\
-  \\quad \\textbf{4.1.2} \\text{ (Find option saving most new nodes)} \\\\
-  \\textbf{4.2} \\text{ Add } (u^*,\\tau^*) \\text{ to } \\Psi \\\\
-  \\textbf{4.3} \\text{ Remove } (u^*,\\tau^*) \\text{ from } \\varepsilon \\\\
+  \\textbf{1.1} \\text{ Graph } G(V,E), \\text{ source node } s, \\text{ target set } T \\subseteq V, \\text{ budget } B \\\\
+
+  \\textbf{Stage 2: Preprocessing} \\\\
+  \\textbf{2.1} \\text{ For each } v \\in V, \\text{ calculate } \\Gamma(v) = \\{(u,\\tau) \\mid u \\in V \\text{ and } 0 < \\tau \\leq d(s,v) - d(u,v)\\} \\\\
+  \\textbf{2.2} \\text{ For each possible } (u,\\tau) \\text{ pair, calculate } S(u,\\tau) = \\{v \\in T : (u,\\tau) \\in \\Gamma(v)\\} \\\\
+
+  \\textbf{Stage 3: Initialization} \\\\
+  \\textbf{3.1} \\text{ Set } \\varepsilon \\text{ as all possible } (u,\\tau) \\text{ pairs grouped by } \\tau \\\\
+  \\textbf{3.2} \\text{ Set } \\Psi \\gets \\emptyset \\text{ and } t \\gets 1 \\\\
+
+  \\textbf{Stage 4: Main Algorithm} \\\\
+  \\textbf{4.1} \\text{ While the infection can spread and } t < |\\varepsilon|: \\\\
+  \\textbf{4.2} \\text{ Spread the vaccination to the vaccinated nodes' neighbors} \\\\
+  \\textbf{4.3} \\text{ For } i \\in \\{1, 2, \\dots, |B|\\}: \\\\
+  \\textbf{4.4} \\text{ Find } (u^*,\\tau^*) \\in \\varepsilon_t \\text{ which maximizes saved nodes from } T \\text{ not yet saved by } \\Psi \\\\
+  \\textbf{4.5} \\text{ Add } (u^*,\\tau^*) \\text{ to } \\Psi \\text{ and vaccinate the selected node} \\\\
+  \\textbf{4.6} \\text{ Remove } (u^*,\\tau^*) \\text{ from } \\varepsilon_t \\\\
+  \\textbf{4.7} \\text{ Spread the virus to the infected nodes' neighbors} \\\\
+
   \\textbf{Stage 5: Output} \\\\
-  \\textbf{5.1} \\text{ Return } \\Psi \\quad \\text{(The optimized vaccination strategy)}
-  $$
-  `;
+  \\textbf{5.1} \\text{ Return } \\Psi \\text{ and the saved target nodes} \\\\
+  $$`
+
   const SpreadingMinBudgetPsudo = `
   $$
   \\textbf{Stage 1: Input} \\\\
@@ -98,8 +100,33 @@ function Information() {
   \\textbf{5.4} \\text{ Return } B \\text{ and } \\Psi
   $$`;
 
-  const HeuristicMaxSavePsudo = ``
+  const HeuristicMaxSavePsudo = `
+  $$
+  \\textbf{Stage 1: Input} \\\\
+  \\textbf{1.1} \\text{ Graph } G(V,E), \\text{ source node } s, \\text{ target set } T \\subseteq V, \\text{ budget } B, \\text{ spreading} \\\\
 
+  \\textbf{Stage 2: Initialization} \\\\
+  \\textbf{2.1} \\text{ Set } \\Psi \\gets \\emptyset \\\\
+
+  \\textbf{Stage 3: Main Algorithm} \\\\
+  \\textbf{3.1} \\text{ While the infection can spread:} \\\\
+  \\textbf{3.2} \\text{ If spreading, vaccinate neighbors of vaccinated nodes} \\\\
+  \\textbf{3.3} \\text{ For } i \\in \\{1, 2, \\dots, B\\}: \\\\
+  \\textbf{3.4} \\text{ Set } C \\text{ as the set of unvaccinated neighbors of infected nodes} \\\\
+  \\textbf{3.5} \\text{ Initialize } PQ \\text{ as an empty max priority queue} \\\\
+  \\textbf{3.6} \\text{ For each } u \\in C: \\\\
+  \\textbf{3.7} \\text{ Set } inTarget \\gets [u \\in T] \\text{ (1 if true, 0 if false)} \\\\
+  \\textbf{3.8} \\text{ Set } targetNeighbors \\gets |\\{v \\in N(u) : v \\in T \\text{ and } v \\text{ is not vaccinated}\\}| \\\\
+  \\textbf{3.9} \\text{ Enqueue } u \\text{ into } PQ \\text{ with priority } (inTarget, targetNeighbors, |N(u)|) \\\\
+  \\textbf{3.10} \\text{ If } PQ \\text{ is not empty:} \\\\
+  \\textbf{3.11} \\text{ Set } u^* \\gets \\text{ Dequeue } PQ \\\\
+  \\textbf{3.12} \\text{ Add } (u^*, t) \\text{ to } \\Psi \\\\
+  \\textbf{3.13} \\text{ Vaccinate } u^* \\\\
+  \\textbf{3.14} \\text{ Spread the virus to the infected nodes' neighbors} \\\\
+
+  \\textbf{Stage 4: Output} \\\\
+  \\textbf{4.1} \\text{ Return } \\Psi \\text{ and the saved target nodes} \\\\
+  $$`
 
   const HeuristicMinBudgetPsudo = ` 
   $$
@@ -118,44 +145,36 @@ function Information() {
   $$
   `;
   
-
-
   const dropdowns = [
     {
       id: 'Spreading-Maxsave',
       title: 'Spreading MaxSave',
-      content: "TBD",
       latex: SpreadingMaxSavePsudo
     },
     {
       id: 'Spreading-Minbudget',
       title: 'Spreading Minbudget',
-      content: "In the Spreading MinBudget algorithm, the MinBudget problem is as hard as a set-cover. There is a set-cover of size B if and only if there is a vaccination strategy immunizing at most B nodes per time step. Therefore the algrotithm will be: ",
       latex: SpreadingMinBudgetPsudo
     },
     {
       id: 'NonSpreading-Minbudget',
       title: 'Non-Spreading Minbudget',
-      content:"For the Non-Spreading Minbudget algorithm, the article considers the following equivalent problem: We create a new node t and edges from all nodes in T (the target node's group) to t, and consider the problem of saving t with the minimum budget, under the additional constraint that t itself cannot be vaccinated. Call s the source and t the sink. Therefore the algorithm will be:",
       latex: NonSpreadMinBudgetPsudo
     },
     {
       id: 'NonSpreading-Dirlay-Minbudget',
       title: 'Non-Spreading Dirlay Minbudget',
-      content: "TBD", 
       latex: NonSpreadDirlayMinBudgetPsudo
     },
     {
       id: 'Heuristic-Maxsave',
       title: 'Heuristic Maxsave',
-      content: "TBD",
       latex: HeuristicMaxSavePsudo
 
     },
     {
       id: 'Heuristic-Minbudget',
       title: 'Heuristic Minbudget',
-      content: "We will use in the same approach, just like in the Spreading MinBudget algorithm. Therefore the algorithm will be: ", 
       latex: HeuristicMinBudgetPsudo
 
     }
