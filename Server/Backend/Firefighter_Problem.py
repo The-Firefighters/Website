@@ -26,10 +26,10 @@ from . import max_flow_with_node_capacity
 from . import Utils
 
 def setup_logger(logger):
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     
     console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.INFO)
+    console_handler.setLevel(logging.DEBUG)
     
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     console_handler.setFormatter(formatter)
@@ -415,7 +415,7 @@ def heuristic_maxsave(Graph:nx.DiGraph, budget:int, source:int, targets:list, sp
         if spreading:
             Utils.spread_vaccination(Graph, vaccinated_nodes)
         for i in range(budget):
-            logger.info(f"Calculating the best direct vaccination strategy for the current time step that saves more new node in targets (Current budget: {budget})")
+            logger.info(f"Calculating the best direct vaccination strategy for the current time step that saves more new node in targets (Current budget: {i+1} out of {budget})")
             node_to_vaccinate, nodes_saved = Utils.find_best_neighbor(Graph, infected_nodes, local_targets, targets)
             if node_to_vaccinate is not None:
                 logger.info(f"Found {node_to_vaccinate} as a solution for current timestamp, appending to vaccination strategy and vaccinating the node")

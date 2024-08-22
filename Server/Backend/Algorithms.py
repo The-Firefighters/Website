@@ -6,32 +6,38 @@ from datetime import datetime
 
 def setup_logger():
     logger = logging.getLogger('firefighter_problem_main')
-    if not logger.handlers:
-        logger.setLevel(logging.DEBUG)
 
-        # Console Handler
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.DEBUG)
+    # Remove existing handlers to avoid duplication and to reset logging
+    if logger.hasHandlers():
+        logger.handlers.clear()
 
-        # File Handler
-        log_directory = "logs"
-        if not os.path.exists(log_directory):
-            os.makedirs(log_directory)
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        log_filename = f"{log_directory}/firefighter_log_{timestamp}.txt"
-        file_handler = logging.FileHandler(log_filename)
-        file_handler.setLevel(logging.DEBUG)
+    logger.setLevel(logging.DEBUG)
 
-        # Formatter
-        formatter = logging.Formatter('%(message)s')
-        console_handler.setFormatter(formatter)
-        file_handler.setFormatter(formatter)
+    # Console Handler
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.DEBUG)
 
-        # Add handlers to logger
-        logger.addHandler(console_handler)
-        logger.addHandler(file_handler)
+    # File Handler
+    log_directory = "logs"
+    if not os.path.exists(log_directory):
+        os.makedirs(log_directory)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_filename = f"{log_directory}/firefighter_log_{timestamp}.txt"
+    file_handler = logging.FileHandler(log_filename)
+    file_handler.setLevel(logging.DEBUG)
+
+    # Formatter
+    formatter = logging.Formatter('%(message)s')
+    console_handler.setFormatter(formatter)
+    file_handler.setFormatter(formatter)
+
+    # Add handlers to logger
+    logger.addHandler(console_handler)
+    logger.addHandler(file_handler)
 
     return logger, log_filename
+
+
 
 
 def create_nx_graph(data):
