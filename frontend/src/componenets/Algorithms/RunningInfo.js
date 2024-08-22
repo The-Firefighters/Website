@@ -74,6 +74,19 @@ const RunningInfo = ({ algorithmResult, selectedAlgorithm, currentStep, setCurre
     );
   };
 
+ const renderLogContent = () => {
+    if (!algorithmResult || !algorithmResult.logContent) {
+      return <p>Log content not available.</p>;
+    }
+
+    return (
+      <pre className="log-content">
+        {algorithmResult.logContent}
+      </pre>
+    );
+  };
+
+
   return (
     <div className="running-info">
       <div className="info-content">
@@ -95,12 +108,8 @@ const RunningInfo = ({ algorithmResult, selectedAlgorithm, currentStep, setCurre
       <div className="log-box">
         <h3>Log Output</h3>
         <div className="log-content">
-          {algorithmResult ? (
-            <pre>{JSON.stringify(algorithmResult, null, 2)}</pre>
-          ) : (
-            <p>Waiting for algorithm result...</p>
-          )}
-        </div>
+           {renderLogContent()}
+      </div>
       </div>
       {renderAlgoResult()}
     </div>

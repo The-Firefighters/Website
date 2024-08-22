@@ -67,8 +67,14 @@ const ChooseAlgo = ({
         })
         .then(response => {
           console.log('Server response:', response.data);
-          setAlgorithmResult(response.data);
+          return axios.get(`http://localhost:5000/get-log/${response.data.logFilename}`, { responseType: 'text' })
+          .then(logResponse => {
+            setAlgorithmResult({
+              ...response.data,
+              logContent: logResponse.data
+            });
           setSelectedAlgorithm(localSelectedAlgorithm);
+          });
         })
         .catch(error => {
           console.error('Error running algorithm:', error);
