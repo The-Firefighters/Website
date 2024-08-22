@@ -76,15 +76,28 @@ const RunningInfo = ({ algorithmResult, selectedAlgorithm, currentStep, setCurre
 
  const renderLogContent = () => {
     if (!algorithmResult || !algorithmResult.logContent) {
-      return <p>Log content not available.</p>;
+        return <p>Log content not available.</p>;
     }
 
-    return (
-      <pre className="log-content">
-        {algorithmResult.logContent}
-      </pre>
-    );
-  };
+    const lines = algorithmResult.logContent.split('\n').map((line, index) => {
+        let className = '';
+        if (line.includes('ERROR')) {
+            className = 'log-error';
+        } else if (line.includes('WARNING')) {
+            className = 'log-warning';
+        } else {
+            className = 'log-info';
+        }
+
+        return (
+            <p key={index} className={className}>
+                {line}
+            </p>
+        );
+    });
+
+    return <div className="log-content">{lines}</div>;
+};
 
 
   return (

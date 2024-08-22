@@ -49,11 +49,15 @@
     font-size: 14px;
 }
 
+/* Main content of the log */
 .log-content {
-    font-family: monospace;
-    font-size: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    line-height: 1.25;
+    padding: 4px;
+    border-radius: 4px;
     white-space: pre-wrap;
-    word-break: break-all;
+    word-break: break-word;
 }
 
 .log-content p {
