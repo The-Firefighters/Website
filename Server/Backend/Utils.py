@@ -485,7 +485,7 @@ def adjust_nodes_capacity(graph:nx.DiGraph, source:int) -> list:
     >>> G.nodes(data=True)
     NodeDataView({1: {}, 2: {'capacity': 0.5454545454545455}, 3: {'capacity': 0.27272727272727276}, 4: {'capacity': 0.18181818181818182}})
     """
-    logger.debug(f"Starting to adjust node capacity for dirlay graph nodes...") 
+    logger.info(f"Starting to adjust node capacity for dirlay graph nodes...") 
 
     layers = (list(nx.bfs_layers(graph,source)))
     harmonic_sum = 0.0
@@ -494,7 +494,7 @@ def adjust_nodes_capacity(graph:nx.DiGraph, source:int) -> list:
     for index in range(1,len(layers)):
         for node in layers[index]:
             graph.nodes[node]['capacity'] = 1/(index*harmonic_sum)
-            logger.info(f"Added Capacity {1/(index*harmonic_sum)} for node: {node}") 
+            logger.debug(f"Added Capacity {1/(index*harmonic_sum)} for node: {node}") 
 
     logger.info(f"Done with adding capacity for nodes, with Layers: {layers}")       
 
@@ -616,6 +616,24 @@ def calculate_vaccine_matrix(layers: list, min_cut_nodes_grouped:dict) -> np.mat
 
 
 def matrix_to_integers_values(matrix: np.matrix) -> np.matrix:
+    """
+    Convert a matrix with floating-point values to a matrix with integer values while 
+    preserving the row and column sums.
+
+    Parameters:
+    ----------
+    matrix : np.matrix
+        Input matrix with floating-point values.
+
+    Returns:
+    -------
+    np.matrix
+        Matrix with integer values where the row and column sums are adjusted to match
+        the original matrix as closely as possible.
+    """
+
+    logger.info ("Converting the matrix to integer values..")
+
     # Step 1: Calculate the row sums and column sums
     row_sums = np.sum(matrix, axis=1)
     col_sums = np.sum(matrix, axis=0)
@@ -644,6 +662,8 @@ def matrix_to_integers_values(matrix: np.matrix) -> np.matrix:
             idx = np.argmax(matrix[:, j] - rounded_matrix[:, j]) if diff > 0 else np.argmin(matrix[:, j] - rounded_matrix[:, j])
             rounded_matrix[idx, j] += diff
         current_col_sums = np.sum(rounded_matrix, axis=0)  # Update column sums after adjustment
+
+    logger.info("Integer matrix as follows -", rounded_matrix)
     
     return rounded_matrix
 
