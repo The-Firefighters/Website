@@ -11,11 +11,11 @@ def setup_logger():
     if logger.hasHandlers():
         logger.handlers.clear()
 
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
 
     # Console Handler
     console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.DEBUG)
+    console_handler.setLevel(logging.INFO)
 
     # File Handler
     log_directory = "logs"
@@ -24,7 +24,7 @@ def setup_logger():
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     log_filename = f"{log_directory}/firefighter_log_{timestamp}.txt"
     file_handler = logging.FileHandler(log_filename)
-    file_handler.setLevel(logging.DEBUG)
+    file_handler.setLevel(logging.INFO)
 
     # Formatter
     formatter = logging.Formatter('%(message)s')

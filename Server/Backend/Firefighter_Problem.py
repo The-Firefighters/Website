@@ -22,6 +22,7 @@ import networkx as nx
 import networkx.algorithms.connectivity as algo 
 import math
 import logging
+import numpy as np
 from . import max_flow_with_node_capacity
 from . import Utils
 
@@ -347,8 +348,8 @@ def non_spreading_dirlaynet_minbudget(Graph:nx.DiGraph, source:int, targets:list
     G_reduction_min_cut = max_flow_with_node_capacity.min_cut_with_node_capacity(G, source=source, target='t')
     N_groups = Utils.min_cut_N_groups(G_reduction_min_cut,layers)
     vacc_matrix = Utils.calculate_vaccine_matrix(layers, N_groups)
-    integer_matrix = Utils.matrix_to_integers_values(vacc_matrix)
-    min_budget = Utils.min_budget_calculation(vacc_matrix)
+    integer_matrix = Utils.matrix_to_integers_values(np.array(vacc_matrix))
+    min_budget = Utils.min_budget_calculation(integer_matrix)
     strategy = Utils.dirlay_vaccination_strategy(integer_matrix, N_groups)
 
     logger.info(f"Returning minimum budget: {min_budget} and the vaccination strategy: {strategy}")
