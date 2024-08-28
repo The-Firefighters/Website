@@ -1,6 +1,4 @@
 # Website
-This is the website side of our python backend algorithm.
+This is the backend side of our project.
 
-## Running exmaple
-
-https://youtu.be/SYQj66O1g_M
+our server is hosted under our university gunicorn 
