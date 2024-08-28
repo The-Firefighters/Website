@@ -6,7 +6,6 @@ import logging
 
 app = Flask(__name__, static_folder='frontend/build', static_url_path='')
 
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -50,14 +49,6 @@ def run_algorithm_endpoint():
 def get_log(filename):
     log_directory = "logs"
     return send_file(os.path.join(log_directory, filename), as_attachment=True)
-
-@app.route('/debug-static')
-def debug_static():
-    static_files = os.listdir(app.static_folder)
-    return jsonify({
-        "static_folder": app.static_folder,
-        "files": static_files
-    })
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
