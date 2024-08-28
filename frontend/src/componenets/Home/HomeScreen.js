@@ -7,7 +7,7 @@ function HomeScreen() {
     {
       id: 'problem',
       title: 'The Problem',
-      content: "The firefighter problem defines a discrete-time process where a fire starts at a designated subset of the vertices of a graph G. At each subsequent discrete time unit, the fire propagates from each burnt vertex to all of its neighbors unless they are defended by a firefighter that can move between any pair of vertices in a single time unit. Once a vertex is burnt or defended, it remains in that state, and the process terminates when the fire can no longer spread."
+      content: "The firefighter problem defines a discrete-time process where a fire starts at a designated subset of the vertices of a graph G. At each subsequent discrete time unit, the fire propagates from each burnt vertex to all of its neighbors unless they are defended by a firefighter. Once a vertex is burnt or defended, it remains in that state, and the process terminates when the fire can no longer spread."
     },
     {
       id: 'methods',

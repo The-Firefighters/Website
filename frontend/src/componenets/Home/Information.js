@@ -133,7 +133,7 @@ function Information() {
   \\textbf{Stage 1: Input} \\\\
   \\textbf{1.1} \\text{ Graph } G(V,E), \\text{ source node } s, \\text{ target set } T \\subseteq V \\\\
   \\textbf{Stage 2: Binary Search} \\\\
-  \\textbf{2.1} \\text{ Perform a binary search on the size of the target group } T \\\\
+  \\textbf{2.1} \\text{ Perform a binary search on on the degree of the source node - } N(source) \\\\
   \\textbf{2.2} \\text{ Set } B \\text{ as the current median of the binary search} \\\\
   \\textbf{Stage 3: Algorithm Execution} \\\\
   \\textbf{3.1} \\text{ Run the Heuristic MaxSave algorithm on the parameters of the problem with the budget } B \\\\
