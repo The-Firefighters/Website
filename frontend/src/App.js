@@ -13,6 +13,7 @@ function App() {
       <div className="App">
         <Toolbar /> {}
         <Routes>
+          <Route path="/" element={<HomeScreen />} />
           <Route path="*" element={<HomeScreen/>} />
           <Route path="/AlgorithmsPage" element={<Algorithm/>} />
           <Route path="/Information" element={<Information/>} />

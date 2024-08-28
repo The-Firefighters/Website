@@ -41,7 +41,6 @@ def get_log(filename):
     log_directory = "logs"
     return send_file(os.path.join(log_directory, filename), as_attachment=True)
 
-# Serve React App
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
