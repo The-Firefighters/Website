@@ -1,9 +1,9 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, send_from_directory, request, jsonify, send_file
 from flask_cors import CORS
 from Server.Backend import Algorithms
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='frontend/build', static_url_path='')
 CORS(app)
 
 def result_to_json(algo_result, selected_algorithm, log_filename):
@@ -38,8 +38,17 @@ def run_algorithm_endpoint():
 
 @app.route('/get-log/<filename>', methods=['GET'])
 def get_log(filename):
-    log_directory = "logs"  # Make sure this matches the directory in your Algorithms.py
+    log_directory = "logs"
     return send_file(os.path.join(log_directory, filename), as_attachment=True)
+
+# Serve React App
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
