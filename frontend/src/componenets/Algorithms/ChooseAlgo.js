@@ -58,7 +58,7 @@ const ChooseAlgo = ({
           edges: edges.map(({ source, target }) => ({ source, target }))
         };
   
-        axios.post('http://almogyuvalshaked.csariel.xyz/run-algorithm', {
+        axios.post('https://almogyuvalshaked.csariel.xyz/run-algorithm', {
           graph: graphData,
           selectedAlgorithm: localSelectedAlgorithm,
           sourceNode,
@@ -67,7 +67,7 @@ const ChooseAlgo = ({
         })
         .then(response => {
           console.log('Server response:', response.data);
-          return axios.get(`http://almogyuvalshaked.csariel.xyz/get-log/${response.data.logFilename}`, { responseType: 'text' })
+          return axios.get(`https://almogyuvalshaked.csariel.xyz/get-log/${response.data.logFilename}`, { responseType: 'text' })
           .then(logResponse => {
             setAlgorithmResult({
               ...response.data,
