@@ -42,4 +42,4 @@ def get_log(filename):
     return send_file(os.path.join(log_directory, filename), as_attachment=True)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True)
