@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
-from Backend import Algorithms
+from Server.Backend import Algorithms
 import os
 
 app = Flask(__name__)
