@@ -4,6 +4,12 @@ from Server.Backend import Algorithms
 import os
 
 app = Flask(__name__, static_folder='frontend/build', static_url_path='')
+
+print("Current working directory:", os.getcwd())
+print("Static folder path:", app.static_folder)
+print("Absolute static folder path:", os.path.abspath(app.static_folder))
+print("Does static folder exist?", os.path.exists(app.static_folder))
+
 CORS(app)
 
 def result_to_json(algo_result, selected_algorithm, log_filename):
@@ -41,10 +47,19 @@ def get_log(filename):
     log_directory = "logs"
     return send_file(os.path.join(log_directory, filename), as_attachment=True)
 
+@app.route('/debug-static')
+def debug_static():
+    static_files = os.listdir(app.static_folder)
+    return jsonify({
+        "static_folder": app.static_folder,
+        "files": static_files
+    })
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
+    print(f"Requested path: {path}")
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
         return send_from_directory(app.static_folder, path)
     else:
         return send_from_directory(app.static_folder, 'index.html')
