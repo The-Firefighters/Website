@@ -1,25 +1,22 @@
 import React from "react";
 import "./Contact.css";
-import almogImage from "./images/almogIMG.jpeg";
-import shakedImage from "./images/shakedIMG.jpeg";
-import yuvalImage from "./images/yuvalIMG.jpeg";
 
 const teamMembers = [
     {
         name: "Shaked Levi",
-        image: shakedImage,
+        image: "./images/shakedIMG.jpeg",
         github: "https://github.com/20shaked20",
         linkedin: "https://www.linkedin.com/in/shaked-levi-lin/"
     },
     {
         name: "Almog David",
-        image: almogImage,
+        image: "./images/.almogIMGjpeg",
         github: "https://github.com/Almog-David",
         linkedin: "https://www.linkedin.com/in/almog-david/"
     },
     {
         name: "Yuval Bubnovsky",
-        image: yuvalImage,
+        image: "./images/yuvalIMG.jpeg",
         github: "https://github.com/YuvalBubnovsky",
         linkedin: "https://www.linkedin.com/in/yuvalbubnovsky/"
     },

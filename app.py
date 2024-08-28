@@ -63,7 +63,6 @@ def serve(path):
     logger.info(f"Received request for path: {path}")
     full_path = os.path.join(app.static_folder, path)
     logger.debug(f"Full path: {full_path}")
-    logger.debug(f"Does path exist? {os.path.exists(full_path)}")
     
     if path != "" and os.path.exists(full_path):
         logger.info(f"Serving file: {full_path}")
