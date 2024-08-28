@@ -2,13 +2,17 @@ from flask import Flask, send_from_directory, request, jsonify, send_file
 from flask_cors import CORS
 from Server.Backend import Algorithms
 import os
+import logging
 
 app = Flask(__name__, static_folder='frontend/build', static_url_path='')
 
-print("Current working directory:", os.getcwd())
-print("Static folder path:", app.static_folder)
-print("Absolute static folder path:", os.path.abspath(app.static_folder))
-print("Does static folder exist?", os.path.exists(app.static_folder))
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+logger.info(f"Static folder path: {app.static_folder}")
+logger.info(f"Absolute static folder path: {os.path.abspath(app.static_folder)}")
+logger.info(f"Does static folder exist? {os.path.exists(app.static_folder)}")
 
 CORS(app)
 
